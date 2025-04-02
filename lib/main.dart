@@ -1,54 +1,54 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:gaming_startup_ai_agent/core/observers/navigation.dart';
+import 'package:gaming_startup_ai_agent/firebase_options.dart';
+import 'package:gaming_startup_ai_agent/src/res/theme/theme.dart';
+import 'package:gaming_startup_ai_agent/src/router/provider.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'features/chat/presentation/ui/screens/chat.dart';
+late final FirebaseApp app;
+late final FirebaseAuth auth;
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  app = await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  auth = FirebaseAuth.instanceFor(app: app);
+  runApp(ProviderScope(child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouter);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: MaterialApp.router(
+        title: 'AI Agent',
+        theme: AppTheme.light,
+        darkTheme: AppTheme.dark,
+        routeInformationParser: router.defaultRouteParser(),
+        routeInformationProvider: router.routeInfoProvider(),
+
+        debugShowCheckedModeBanner: false,
+        routerDelegate: AutoRouterDelegate(
+          router,
+          navigatorObservers: () => [AppRouteObservers()],
+        ),
+        backButtonDispatcher: RootBackButtonDispatcher(),
+
+        // home: const ChatScreen(),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: ChatScreen(),
-      /*floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),*/
     );
   }
 }
