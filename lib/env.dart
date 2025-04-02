@@ -1,14 +1,14 @@
 final productionAppConfig = {
-  "baseUrl": "https://toronet.org/api/",
+  "baseUrl": "",
 
 };
 
 final stagingAppConfig = {
-  "baseUrl": "https://testnet.toronet.org/api/",
+  "baseUrl": "",
 };
 
 //"localServer": "http://localhost:8080/",
 final developmentAppConfig = {
-  "baseUrl": "https://testnet.toronet.org/api/",
+  "baseUrl": "",
 
 };
