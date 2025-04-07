@@ -19,13 +19,13 @@ shorebird-patch-ios:
 refresh:
 	@echo " Getting Dependency"
 	flutter pub get
-clean-ios:
-	@echo " Cleaning ios the code"
+clean-macos:
+	@echo " Cleaning the macos code"
 	flutter clean
-	cd ios && rm -rf Podfile.lock
-	cd ios && rm -rf Pods
+	cd macos && rm -rf Podfile.lock
+	cd macos && rm -rf Pods
 	flutter pub get
-	cd ios && pod install
+	cd macos && pod install
 build-appbundle: refresh
 	@echo "Building appbundle"
 	flutter build appbundle
