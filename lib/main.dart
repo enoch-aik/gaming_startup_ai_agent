@@ -37,6 +37,7 @@ class MyApp extends ConsumerWidget {
         title: 'AI Agent',
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
+        themeMode: ThemeMode.light,
         routeInformationParser: router.defaultRouteParser(),
         routeInformationProvider: router.routeInfoProvider(),
 
