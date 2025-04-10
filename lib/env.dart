@@ -1,14 +1,14 @@
 final productionAppConfig = {
-  "baseUrl": "",
+  "baseUrl": "http://127.0.0.1:5000/",
 
 };
 
 final stagingAppConfig = {
-  "baseUrl": "",
+  "baseUrl": "http://127.0.0.1:5000",
 };
 
 //"localServer": "http://localhost:8080/",
 final developmentAppConfig = {
-  "baseUrl": "",
+  "baseUrl": "http://127.0.0.1:5000",
 
 };

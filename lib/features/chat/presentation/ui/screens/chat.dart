@@ -2,8 +2,16 @@ import 'dart:ui';
 
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
 import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
+import 'package:gaming_startup_ai_agent/features/chat/data/models/message_res_model.dart';
+import 'package:gaming_startup_ai_agent/features/chat/presentation/ui/widgets/ai_message_bubble.dart';
+import 'package:gaming_startup_ai_agent/features/chat/presentation/ui/widgets/chat_tile.dart';
+import 'package:gaming_startup_ai_agent/features/chat/presentation/ui/widgets/human_message_bubble.dart';
+import 'package:gaming_startup_ai_agent/features/chat/providers.dart';
+import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
+import 'package:gaming_startup_ai_agent/src/extensions/string.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/init_icon.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/row_spacing.dart';
@@ -18,8 +26,16 @@ class ChatScreen extends HookConsumerWidget {
     final UserAuthInformation user = ref.watch(currentUserDetails)!;
     // final UserAuthInformation user = ;
 
-    final searchTextController = TextEditingController();
-    Size screenSize = MediaQuery.of(context).size;
+    final searchTextController = useTextEditingController();
+    final chatTextController = useTextEditingController();
+    Size screenSize = MediaQuery
+        .of(context)
+        .size;
+    final chatRepo = ref.read(chatRepoProvider);
+    final chatSession = ref.read(getChatSessionFutureProvider(user.username));
+    final selectedChat = ref.watch(selectedChatProvider);
+
+    final chatHistory = ref.watch(chatHistoryProvider);
     return Scaffold(
       body: Row(
         children: [
@@ -29,11 +45,11 @@ class ChatScreen extends HookConsumerWidget {
               width: screenSize.width * 0.225,
               height: double.maxFinite,
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.black),
+                border: Border.all(color: context.primary),
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black12.withValues(
+                    color: context.primaryContainer.withValues(
                       colorSpace: ColorSpace.sRGB,
                     ),
                   ),
@@ -50,7 +66,7 @@ class ChatScreen extends HookConsumerWidget {
                           height: 50,
                           width: double.maxFinite,
                           decoration: BoxDecoration(
-                            color: Colors.black12,
+                            color: context.primaryContainer,
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Row(
@@ -80,41 +96,53 @@ class ChatScreen extends HookConsumerWidget {
                           ),
                         ),
                         ColSpacing(16),
-                        ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          leading: Icon(Icons.notes_rounded),
-                          title: Text('Current development in AI'),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          leading: Icon(Icons.notes_rounded),
-                          title: Text('RPG game config'),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          leading: Icon(Icons.notes_rounded),
-                          title: Text(
-                            'What are the advantages of experimenting?',
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          onTap: () {},
+                        chatSession.when(
+                          data: (data) {
+                            /*if (data.isNotEmpty) {
+                              ref.read(selectedChatProvider.notifier).state =
+                                  data.first;
+                            }*/
+
+                            return ListView.separated(
+                              shrinkWrap: true,
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return ChatTile(chat: data[index]);
+                              },
+                              separatorBuilder: (context, index) {
+                                return ColSpacing(2);
+                              },
+                              itemCount: data.length,
+                            );
+                          },
+                          error: (e, _) {
+                            return SizedBox(child: Text('Unable to retrieve'));
+                          },
+                          loading: () {
+                            return Center(child: CircularProgressIndicator());
+                          },
                         ),
                       ],
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: ListTile(
-                      leading: InitIcon(text: user.username),
-                      title: Text(user.username),
+                  Padding(
+                    padding: EdgeInsets.only(left: 16, right: 16, bottom: 4.0),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        titleAlignment: ListTileTitleAlignment.center,
+                        leading: InitIcon(
+                          text: user.username,
+                          size: 40,
+                          backgroundColor: context.primary,
+                        ),
+                        trailing: IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.more_vert),
+                        ),
+                        title: Text(user.username.capitalizeFirst),
+                      ),
                     ),
                   ),
                 ],
@@ -126,6 +154,55 @@ class ChatScreen extends HookConsumerWidget {
               padding: EdgeInsets.only(bottom: 16, right: 16),
               child: Stack(
                 children: [
+                  if (selectedChat != null)
+                    chatHistory.when(
+                      data: (x) {
+                        // x.removeAt(0);
+                        final data = x.reversed.toList();
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 80),
+                          child: SizedBox(height: screenSize.height,
+                            child: ListView.separated(
+                              reverse: true,
+                              shrinkWrap: true,
+                              clipBehavior: Clip.antiAlias,
+                              physics: AlwaysScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final currentData = data[index];
+
+                                switch (currentData.type) {
+                                  case ChatType.ai:
+                                    return AiMessageBubble(
+                                        message: currentData);
+                                  case ChatType.system:
+                                    return HumanMessageBubble(
+                                        message: currentData);
+                                  case ChatType.human:
+                                    return HumanMessageBubble(
+                                        message: currentData);
+                                }
+                                return Text(data[index].content);
+                                //subtitle: Text(data[index].createdAt.toString()),
+                              },
+                              separatorBuilder: (context, index) {
+                                return ColSpacing(24);
+                              },
+                              itemCount: data.length,
+                            ),
+                          ),
+                        );
+                      },
+                      error: (e, _) {
+                        return Center(
+                          child: Text(
+                            'Unable to retrieve chat history: ${e.toString()}',
+                          ),
+                        );
+                      },
+                      loading: () {
+                        return Center(child: CircularProgressIndicator());
+                      },
+                    ),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: DecoratedBox(
@@ -133,10 +210,11 @@ class ChatScreen extends HookConsumerWidget {
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           width: 5,
-                          color: Colors.black12.withOpacity(0.15),
+                          color: context.primaryContainer.withOpacity(0.15),
                         ),
                       ),
                       child: TextField(
+                        controller: chatTextController,
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.only(
                             left: 16,
@@ -149,7 +227,14 @@ class ChatScreen extends HookConsumerWidget {
                           ),
                           suffixIcon: IconButton(
                             icon: Icon(Icons.send),
-                            onPressed: () {},
+                            onPressed: () async {
+                              String query = chatTextController.text;
+                              chatTextController.clear();
+                              final result = await ref.read(
+                                  chatHistoryProvider.notifier).continueChat(
+                                  query: query);
+
+                            },
                           ),
                         ),
                       ),
