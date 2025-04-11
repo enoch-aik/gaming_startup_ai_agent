@@ -16,22 +16,21 @@ class ChatDataSourceImplementation extends ChatDataSource {
   ChatDataSourceImplementation({required this.ref, required this.firestore});
 
   @override
-  Future<List<ChatResModel>> getAllChatSessions(String username) async {
+  Stream<List<ChatResModel>> getAllChatSessions(String username) {
     //get the list of all chat from firebase collection 'chat_history' where the document name contains username
     //and return the list of chat sessions
 
-    final data = await firestore.collection('chat_history').get();
+    /* return _firestore.collection('donations').snapshots().map((event) =>
+        event.docs.map((e) => NewDonation.fromJson(e.data())).toList());*/
 
-    //get the list of all chat sessions
-    final List<ChatResModel> chatSessions =
-        data.docs.map((e) => ChatResModel.fromString(e.id)).toList();
+    return firestore.collection('chat_history').snapshots().map((event) {
+      List<ChatResModel> chats =
+          event.docs.map((e) {
+            return ChatResModel.fromString(e.id);
+          }).toList();
 
-    List<ChatResModel> userChatSessions =
-        chatSessions.toList().where((session) {
-          return session.username == username;
-        }).toList();
-
-    return userChatSessions;
+      return chats.where((session) => session.username == username).toList();
+    });
   }
 
   @override
@@ -61,9 +60,25 @@ class ChatDataSourceImplementation extends ChatDataSource {
 
     await apiResponseChecker(response);
 
-    MessageResModel chatHistory = MessageResModel.fromJson(
-      response.data,
+    MessageResModel message = MessageResModel.fromJson(response.data);
+
+    return message;
+  }
+
+  @override
+  Future<MessageResModel> startChat({
+    required String username,
+    required String agentType,
+    required String query,
+  }) async {
+    final response = await _apiClient.post(
+      '/start_chat',
+      data: {'username': username, 'query': query, 'agentType': agentType},
     );
+
+    await apiResponseChecker(response);
+
+    MessageResModel chatHistory = MessageResModel.fromJson(response.data);
 
     return chatHistory;
   }

@@ -4,10 +4,16 @@ import 'package:gaming_startup_ai_agent/features/chat/data/models/message_res_mo
 abstract class ChatDataSource {
   Future<List<MessageResModel>> getChatHistory(String sessionId);
 
-  Future<List<ChatResModel>> getAllChatSessions(String username);
+  Stream<List<ChatResModel>> getAllChatSessions(String username);
 
   Future<MessageResModel> continueChat({
     required String sessionId,
+    required String query,
+  });
+
+  Future<MessageResModel> startChat({
+    required String username,
+    required String agentType,
     required String query,
   });
 }
