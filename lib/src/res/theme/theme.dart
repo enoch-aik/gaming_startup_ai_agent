@@ -32,6 +32,7 @@ final class AppTheme {
     // Direct ThemeData properties.
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),
+    fontFamily: 'Gelion'
   );
 
   // The FlexColorScheme defined dark mode ThemeData.
@@ -62,5 +63,6 @@ final class AppTheme {
     // Direct ThemeData properties.
     visualDensity: FlexColorScheme.comfortablePlatformDensity,
     cupertinoOverrideTheme: const CupertinoThemeData(applyThemeToAll: true),
+    fontFamily: 'Gelion'
   );
 }
