@@ -2,15 +2,25 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'message_res_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class MessageResModel {
   final String content;
-  @JsonKey(
-    unknownEnumValue: JsonKey.nullForUndefinedEnumValue,
-  )
+  @JsonKey()
   final ChatType type;
+  final String? title;
+  final String? sessionId;
 
-  MessageResModel({required this.content, required this.type});
+  MessageResModel({
+    required this.content,
+    required this.type,
+    this.title,
+    this.sessionId,
+  });
+
+  factory MessageResModel.error() => MessageResModel(
+    content: 'Unable to generate response, try again later',
+    type: ChatType.ai,
+  );
 
   factory MessageResModel.fromJson(Map<String, dynamic> json) =>
       _$MessageResModelFromJson(json);

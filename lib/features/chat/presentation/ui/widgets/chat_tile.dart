@@ -31,8 +31,18 @@ class ChatTile extends ConsumerWidget {
           overflow: TextOverflow.ellipsis,
           color: isSelected ? context.onPrimary : context.onSecondary,
         ),
-        onTap: () {
+        onTap: () async {
+          bool hasPreviouslySelectedAnotherChat =
+              ref.read(selectedChatProvider.notifier).state != null;
+          // Check if the selected chat is different from the current one
+
+          bool isDifferentChat =
+              ref.read(selectedChatProvider.notifier).state != chat;
+
           ref.read(selectedChatProvider.notifier).state = chat;
+          if (hasPreviouslySelectedAnotherChat || isDifferentChat) {
+            ref.invalidate(chatHistoryProvider);
+          }
         },
       ),
     );

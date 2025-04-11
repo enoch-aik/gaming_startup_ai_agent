@@ -15,7 +15,7 @@ class HumanMessageBubble extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(8),
         constraints: BoxConstraints(
-          minWidth: 200,
+          minWidth: 70,
           maxWidth: screenSize.width * 0.4,
         ),
         decoration: BoxDecoration(
