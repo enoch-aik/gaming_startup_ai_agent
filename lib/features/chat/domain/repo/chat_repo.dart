@@ -6,10 +6,16 @@ import 'package:gaming_startup_ai_agent/features/chat/data/models/message_res_mo
 abstract class ChatRepository {
   Future<ApiResult<List<MessageResModel>>> getChatHistory(String sessionId);
 
-  Future<ApiResult<List<ChatResModel>>> getAllChatSessions(String username);
+  ApiResult<Stream<List<ChatResModel>>> getAllChatSessions(String username);
 
 Future<ApiResult<MessageResModel>> continueChat({
     required String sessionId,
+    required String query,
+  });
+
+  Future<ApiResult<MessageResModel>> startChat({
+    required String username,
+    required String agentType,
     required String query,
   });
 

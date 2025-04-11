@@ -1,25 +1,29 @@
-class ChatResModel {
+import 'package:equatable/equatable.dart';
+
+class ChatResModel extends Equatable {
   final String username;
   final String sessionId;
   final DateTime createdAt;
   final String timeStamp;
 
-  ChatResModel({
+  const ChatResModel({
     required this.username,
     required this.sessionId,
     required this.createdAt,
-    required this.timeStamp
+    required this.timeStamp,
   });
 
   String get rawData {
-    return '$username'+'_'+'$sessionId'+'_'+timeStamp;
+    return '$username' + '_' + '$sessionId' + '_' + timeStamp;
   }
 
   factory ChatResModel.fromString(String chat) {
     final parts = chat.split('_');
     final username = parts[0];
     final sessionId = parts[1];
-    final createdAt = DateTime.fromMillisecondsSinceEpoch((double.parse(parts[2]) * 1000).toInt());
+    final createdAt = DateTime.fromMillisecondsSinceEpoch(
+      (double.parse(parts[2]) * 1000).toInt(),
+    );
 
     return ChatResModel(
       username: username,
@@ -28,4 +32,7 @@ class ChatResModel {
       timeStamp: parts[2],
     );
   }
+
+  @override
+  List<Object?> get props => [username, sessionId, createdAt, timeStamp];
 }

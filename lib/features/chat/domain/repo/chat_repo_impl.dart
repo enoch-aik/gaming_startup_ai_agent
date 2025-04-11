@@ -17,8 +17,8 @@ class ChatRepositoryImplementation extends ChatRepository {
   );
 
   @override
-  Future<ApiResult<List<ChatResModel>>> getAllChatSessions(String username) =>
-      apiInterceptor(() => chatDataSource.getAllChatSessions(username));
+  ApiResult<Stream<List<ChatResModel>>> getAllChatSessions(String username) =>
+      streamInterceptor(() => chatDataSource.getAllChatSessions(username));
 
   @override
   Future<ApiResult<List<MessageResModel>>> getChatHistory(String sessionId) =>
@@ -30,5 +30,18 @@ class ChatRepositoryImplementation extends ChatRepository {
     required String query,
   }) => apiInterceptor(
     () => chatDataSource.continueChat(sessionId: sessionId, query: query),
+  );
+
+  @override
+  Future<ApiResult<MessageResModel>> startChat({
+    required String username,
+    required String agentType,
+    required String query,
+  }) => apiInterceptor(
+    () => chatDataSource.startChat(
+      username: username,
+      agentType: agentType,
+      query: query,
+    ),
   );
 }
