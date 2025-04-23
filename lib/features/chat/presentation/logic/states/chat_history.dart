@@ -10,7 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class MessageState extends AsyncNotifier<List<MessageResModel>> {
   late final chatRepo = ref.read(chatRepoProvider);
-  late final ChatResModel selectedChat = ref.watch(selectedChatProvider)!;
+  late ChatResModel selectedChat;
   late final UserAuthInformation user = ref.watch(currentUserDetails)!;
 
   //create an internal state
@@ -24,6 +24,9 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
 
   @override
   FutureOr<List<MessageResModel>> build() async {
+   // await Future.delayed(Duration(milliseconds: 500));
+    selectedChat = ref.watch(selectedChatProvider)!;
+
     final result = await chatRepo.getChatHistory(selectedChat.rawData);
 
     result.when(
@@ -34,6 +37,8 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
         return data;
       },
       apiFailure: (e, _) {
+        //throw  Exception(e.message);
+
         print(e.message);
         state = AsyncData([]);
         _state = AsyncData([]);
@@ -108,7 +113,6 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
   }
 
   FutureOr<void> clearChat() async {
-
     updateThinkingState(false);
     state = AsyncData([]);
     _state = AsyncData([]);
