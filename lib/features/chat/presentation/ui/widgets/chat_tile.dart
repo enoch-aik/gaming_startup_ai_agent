@@ -40,9 +40,13 @@ class ChatTile extends ConsumerWidget {
               ref.read(selectedChatProvider.notifier).state != chat;
 
           ref.read(selectedChatProvider.notifier).state = chat;
-          if (hasPreviouslySelectedAnotherChat || isDifferentChat) {
+
+          print('Selected chat: ${ref.watch(selectedChatProvider)}');
+          /*if (hasPreviouslySelectedAnotherChat || isDifferentChat) {
             ref.invalidate(chatHistoryProvider);
-          }
+          }*/
+
+          return await ref.refresh(chatHistoryProvider.future);
         },
       ),
     );

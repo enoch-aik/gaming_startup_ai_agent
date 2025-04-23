@@ -10,17 +10,20 @@ class AiThinkingMessageBubble extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool isThinking = ref.watch(chatHistoryProvider.notifier).thinking;
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: isThinking ? Row(
-        mainAxisSize: MainAxisSize.min,
-        
-        children: [
-         CupertinoActivityIndicator(),
-          RowSpacing(width: 8),
-          Text('Thinking...')
-        ],
-      ) : SizedBox(),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: isThinking ? Row(
+          mainAxisSize: MainAxisSize.min,
+
+          children: [
+           CupertinoActivityIndicator(),
+            RowSpacing(width: 8),
+            Text('Thinking...')
+          ],
+        ) : SizedBox(),
+      ),
     );
   }
 }

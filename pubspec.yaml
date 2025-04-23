@@ -50,6 +50,7 @@ dependencies:
   shared_preferences:
   flex_color_scheme:
   gpt_markdown: ^1.0.16
+  equatable:
 
 dev_dependencies:
   flutter_test:

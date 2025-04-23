@@ -19,14 +19,13 @@ final chatRepoProvider = Provider<ChatRepositoryImplementation>((ref) {
 });
 
 final getChatSessionFutureProvider =
-    FutureProvider.family<List<ChatResModel>, String>((ref, username) async {
-      final result = await ref
-          .read(chatRepoProvider)
-          .getAllChatSessions(username);
+    StreamProvider.family<List<ChatResModel>, String>((ref, username) {
+      final result = ref.read(chatRepoProvider).getAllChatSessions(username);
       return result.extract(error: []);
     });
 
 final selectedChatProvider = StateProvider<ChatResModel?>((ref) {
+  //return ref.read(getChatSessionFutureProvider(ref.watch(currentUserDetails)!.username)).value?.first;
   return null;
 });
 
