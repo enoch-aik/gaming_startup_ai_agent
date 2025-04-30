@@ -1,10 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:gaming_startup_ai_agent/core/dependency_injection/di_providers.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
 import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
 import 'package:gaming_startup_ai_agent/main.dart';
 import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
 import 'package:gaming_startup_ai_agent/src/extensions/string.dart';
+import 'package:gaming_startup_ai_agent/src/router/router.gr.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/init_icon.dart';
+import 'package:gaming_startup_ai_agent/src/widgets/loader/loader.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class UserProfile extends ConsumerWidget {
@@ -14,50 +18,70 @@ class UserProfile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final UserAuthInformation user = ref.watch(currentUserDetails)!;
     GlobalKey buttonKey = GlobalKey();
-    return Padding(
-      padding: EdgeInsets.only(left: 16, right: 16, bottom: 4.0),
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: ListTile(
-          contentPadding: EdgeInsets.zero,
-          titleAlignment: ListTileTitleAlignment.center,
-          leading: InitIcon(
-            text: user.username,
-            size: 40,
-            backgroundColor: context.primary,
+    return Align(
+      alignment: Alignment.bottomCenter,
+      child: Padding(
+        padding: EdgeInsets.only(left: 8, right: 8),
+        child: Container(
+          height: 58,
+          padding: EdgeInsets.only(bottom: 8),
+          decoration: BoxDecoration(
+            color: context.primaryContainer,
+            borderRadius: BorderRadius.circular(16),
           ),
-          trailing: IconButton(
-            key: buttonKey,
-            onPressed: () {
-              final RenderBox renderBox =
-                  buttonKey.currentContext?.findRenderObject() as RenderBox;
-              final Size size = renderBox.size;
-              final Offset offset = renderBox.localToGlobal(Offset.zero);
-              showMenu(
-                context: context,
-                position: RelativeRect.fromLTRB(
-                  offset.dx,
-                  offset.dy + size.height,
-                  offset.dx + size.width,
-                  offset.dy + size.height,
-                ),
-                items: [
-                  PopupMenuItem(
-                    child: Text('Logout'),
-                    onTap: () async => await auth.signOut(),
+          child: ListTile(
+            contentPadding: EdgeInsets.symmetric(horizontal: 8),
+            titleAlignment: ListTileTitleAlignment.center,
+
+            leading: InitIcon(
+              text: user.username,
+              size: 40,
+              backgroundColor: context.primary,
+            ),
+            trailing: IconButton(
+              key: buttonKey,
+              onPressed: () {
+                final RenderBox renderBox =
+                    buttonKey.currentContext?.findRenderObject() as RenderBox;
+                final Size size = renderBox.size;
+                final Offset offset = renderBox.localToGlobal(Offset.zero);
+                showMenu(
+                  context: context,
+                  position: RelativeRect.fromLTRB(
+                    offset.dx,
+                    offset.dy + size.height,
+                    offset.dx + size.width,
+                    offset.dy + size.height,
                   ),
-                  /*PopupMenuItem(
-                    child: Text('Settings'),
-                    onTap: () {
-                      // Navigate to settings
-                    },
-                  ),*/
-                ],
-              );
-            },
-            icon: Icon(Icons.more_vert),
+                  items: [
+                    PopupMenuItem(
+                      child: Text('Logout'),
+                      onTap: () async {
+                        Loader.show(context);
+
+                        await auth.signOut().then((_) {
+                          ref.read(currentUserProvider.notifier).state = null;
+                          ref.read(storeProvider).removeAll();
+                        });
+
+                        if (context.mounted) Loader.hide(context);
+
+                        if (context.mounted) context.replaceRoute(LoginRoute());
+                      },
+                    ),
+                    /*PopupMenuItem(
+                      child: Text('Settings'),
+                      onTap: () {
+                        // Navigate to settings
+                      },
+                    ),*/
+                  ],
+                );
+              },
+              icon: Icon(Icons.more_vert),
+            ),
+            title: Text(user.username.capitalizeFirst),
           ),
-          title: Text(user.username.capitalizeFirst),
         ),
       ),
     );

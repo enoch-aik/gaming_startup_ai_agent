@@ -28,5 +28,11 @@ final currentUserProvider = StateProvider<User?>((ref) {
 });
 
 final currentUserDetails = StateProvider<UserAuthInformation?>((ref) {
-  return UserAuthInformation.error();
+  final store = ref.watch(storeProvider);
+  UserAuthInformation? savedUser = store.fetchUserInfo();
+  return savedUser ?? UserAuthInformation.error();
+});
+
+final authStateProvider = StreamProvider((ref) {
+  return auth.authStateChanges();
 });

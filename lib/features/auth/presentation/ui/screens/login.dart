@@ -1,10 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gaming_startup_ai_agent/core/dependency_injection/di_providers.dart';
+import 'package:gaming_startup_ai_agent/core/service_exceptions/service_exception.dart';
+import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
 import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
 import 'package:gaming_startup_ai_agent/src/router/router.gr.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/loader/loader.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
+import 'package:gaming_startup_ai_agent/src/widgets/toast/toast.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 @RoutePage()
@@ -18,18 +22,24 @@ class LoginScreen extends HookConsumerWidget {
     final usernameController = useTextEditingController();
     final auth = ref.read(authRepoProvider);
     final currentUser = ref.watch(currentUserProvider);
+    final UserAuthInformation? userDetails =
+        ref.read(storeProvider).fetchUserInfo();
+    final ValueNotifier<bool> buttonPressed = useState(false);
 
     // This is used to get the details of the current User, if there is no user, this would be null
     useEffect(() {
-      if (currentUser != null) {
-        auth.getUserInformationFromUid(currentUser.uid).then((result) {
-          result.when(
-            success: (data) {
-              ref.read(currentUserDetails.notifier).state = data;
-              context.replaceRoute(ChatRoute());
-            },
-            apiFailure: (e, _) {},
-          );
+      if (userDetails != null && !buttonPressed.value) {
+        auth.getUserInformationFromUid(currentUser!.uid).then((result) {
+          if (context.mounted) {
+            result.when(
+              success: (data) {
+                ref.read(currentUserDetails.notifier).state = data;
+                context.replaceRoute(ChatRoute());
+              },
+              apiFailure: (e, _) {},
+            );
+          }
+
           return null;
         });
       }
@@ -65,6 +75,7 @@ class LoginScreen extends HookConsumerWidget {
               ColSpacing(16),
               FilledButton(
                 onPressed: () async {
+                  buttonPressed.value = true;
                   if (formKey.currentState!.validate()) {
                     Loader.show(context);
                     final result = await auth.anonymousSignIn(
@@ -74,14 +85,28 @@ class LoginScreen extends HookConsumerWidget {
                     if (context.mounted) {
                       Loader.hide(context);
                       context.replaceRoute(ChatRoute());
-                    }
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        result.when(
+                          success: (data) async {
+                            final userData = await auth
+                                .getUserInformationFromUid(data.user!.uid);
 
-                    result.when(
-                      success: (data) {
-                        print(data);
-                      },
-                      apiFailure: (e, _) {},
-                    );
+                            userData.when(
+                              success: (data) {
+                                ref.read(currentUserDetails.notifier).state =
+                                    data;
+                                context.replaceRoute(ChatRoute());
+                              },
+                              apiFailure: (e, _) {},
+                            );
+                            // ref.read(currentUserDetails.notifier).state = data;
+                          },
+                          apiFailure: (e, _) {
+                            Toast.error(e.message, context);
+                          },
+                        );
+                      });
+                    }
                   }
                 },
                 child: Text('Sign in anonymously'),

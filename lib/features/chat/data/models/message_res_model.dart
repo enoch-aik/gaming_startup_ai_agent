@@ -9,12 +9,15 @@ class MessageResModel {
   final ChatType type;
   final String? title;
   final String? sessionId;
+  @JsonKey(defaultValue: false)
+  final bool? shouldAnimate;
 
   MessageResModel({
     required this.content,
     required this.type,
     this.title,
     this.sessionId,
+    this.shouldAnimate = false,
   });
 
   factory MessageResModel.error() => MessageResModel(

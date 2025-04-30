@@ -12,6 +12,7 @@ MessageResModel _$MessageResModelFromJson(Map<String, dynamic> json) =>
       type: $enumDecode(_$ChatTypeEnumMap, json['type']),
       title: json['title'] as String?,
       sessionId: json['sessionId'] as String?,
+      shouldAnimate: json['shouldAnimate'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$MessageResModelToJson(MessageResModel instance) =>
@@ -20,6 +21,7 @@ Map<String, dynamic> _$MessageResModelToJson(MessageResModel instance) =>
       'type': _$ChatTypeEnumMap[instance.type]!,
       'title': instance.title,
       'sessionId': instance.sessionId,
+      'shouldAnimate': instance.shouldAnimate,
     };
 
 const _$ChatTypeEnumMap = {

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:gaming_startup_ai_agent/core/observers/navigation.dart';
+import 'package:gaming_startup_ai_agent/core/services/storage/store.dart';
 import 'package:gaming_startup_ai_agent/firebase_options.dart';
 import 'package:gaming_startup_ai_agent/src/res/theme/theme.dart';
 import 'package:gaming_startup_ai_agent/src/router/provider.dart';
@@ -13,6 +14,8 @@ late final FirebaseAuth auth;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Store.init();
 
   app = await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -40,7 +43,6 @@ class MyApp extends ConsumerWidget {
         themeMode: ThemeMode.light,
         routeInformationParser: router.defaultRouteParser(),
         routeInformationProvider: router.routeInfoProvider(),
-
         debugShowCheckedModeBanner: false,
         routerDelegate: AutoRouterDelegate(
           router,

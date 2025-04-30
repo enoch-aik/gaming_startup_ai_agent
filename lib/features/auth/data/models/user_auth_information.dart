@@ -30,4 +30,32 @@ class UserAuthInformation {
     this.createdAt,
     this.lastSignInAt,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'username': username,
+      'uid': uid,
+      'metadata': {
+        'createdAt': createdAt?.toIso8601String(),
+        'lastSignInAt':
+            lastSignInAt?.toIso8601String(),
+      },
+    };
+  }
+
+  factory UserAuthInformation.fromMap(Map<String, dynamic> map) {
+    return UserAuthInformation(
+      username: map['username'] as String,
+      uid: map['uid'] as String,
+      createdAt:DateTime.parse(map['metadata']['createdAt']) ,
+      lastSignInAt: DateTime.parse(map['metadata']['lastSignInAt']),
+    );
+  }
+}
+
+extension TimeExtension on DateTime {
+  String get toIso8601String {
+
+    return '$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
+  }
 }
