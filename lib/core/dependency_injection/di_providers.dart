@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:gaming_startup_ai_agent/core/config/api_config/api_config.dart';
 import 'package:gaming_startup_ai_agent/core/config/app_config/app_config.dart';
 import 'package:gaming_startup_ai_agent/core/service_result/src/api_result.dart';
@@ -8,7 +9,9 @@ import 'package:gaming_startup_ai_agent/env.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 //flavor selector
-final currentEnvProvider = StateProvider<AppEnv>((ref) => AppEnv.development);
+final currentEnvProvider = StateProvider<AppEnv>(
+  (ref) => kDebugMode ? AppEnv.development : AppEnv.production,
+);
 
 //appConfig
 final appConfigProvider = Provider<AppConfig>((ref) {
