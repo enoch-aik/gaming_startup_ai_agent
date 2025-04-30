@@ -11,6 +11,11 @@ abstract class ChatDataSource {
     required String query,
   });
 
+ /* Future<Stream<MessageResModel>> continueChatStream({
+    required String sessionId,
+    required String query,
+  });*/
+
   Future<MessageResModel> startChat({
     required String username,
     required String agentType,

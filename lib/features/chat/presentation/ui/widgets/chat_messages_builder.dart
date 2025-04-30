@@ -7,8 +7,10 @@ import 'package:gaming_startup_ai_agent/features/chat/providers.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ChatMessagesBuilder extends ConsumerWidget {
-  const ChatMessagesBuilder({super.key});
+class ChatMessagesBuilder extends HookConsumerWidget {
+  final ScrollController scrollController;
+
+  const ChatMessagesBuilder({super.key, required this.scrollController});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,11 +27,14 @@ class ChatMessagesBuilder extends ConsumerWidget {
               child: SizedBox(
                 height: screenSize.height,
                 child: ListView.separated(
+                  padding: EdgeInsets.only(right: 16, bottom: 8),
                   reverse: true,
                   shrinkWrap: true,
+                  controller: scrollController,
                   clipBehavior: Clip.antiAlias,
                   physics: AlwaysScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
+                    bool isLast = index == data.length - 1;
                     if (index == 0) {
                       return AiThinkingMessageBubble();
                     } else {
@@ -39,9 +44,10 @@ class ChatMessagesBuilder extends ConsumerWidget {
                           return AiMessageBubble(
                             message: currentData,
                             isThinking: false,
+                            isLast: isLast,
                           );
                         case ChatType.system:
-                          return HumanMessageBubble(message: currentData);
+                          return SizedBox();
                         case ChatType.human:
                           return HumanMessageBubble(message: currentData);
                       }

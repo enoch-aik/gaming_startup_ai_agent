@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gaming_startup_ai_agent/core/dependency_injection/di_providers.dart';
 import 'package:gaming_startup_ai_agent/core/helper/api_response_checker.dart';
@@ -26,6 +28,7 @@ class ChatDataSourceImplementation extends ChatDataSource {
     return firestore.collection('chat_history').snapshots().map((event) {
       List<ChatResModel> chats =
           event.docs.map((e) {
+            //print(e.id);
             return ChatResModel.fromString(e.id);
           }).toList();
 
@@ -82,4 +85,44 @@ class ChatDataSourceImplementation extends ChatDataSource {
 
     return chatHistory;
   }
+
+  /*@override
+  Future<Stream<MessageResModel>> continueChatStream({required String sessionId, required String query})async{
+    Response<ResponseBody>  rs = await Dio().get<ResponseBody>(
+      "https://server/stream",
+      options: Options(headers: {
+        "Authorization":
+        'vhdrjb token"',
+        "Accept": "text/event-stream",
+        "Cache-Control": "no-cache",
+      }, responseType: ResponseType.stream), // set responseType to `stream`
+    );
+    StreamTransformer<Uint8List, List<int>> unit8Transformer =
+    StreamTransformer.fromHandlers(
+      handleData: (data, sink) {
+        sink.add(List<int>.from(data));
+      },
+    );
+
+    rs.data?.stream
+        .transform(unit8Transformer)
+        .transform(const Utf8Decoder())
+        .transform(const LineSplitter())
+        .listen((event) {
+
+
+    });
+
+    final response =  _apiClient.post(
+      '/continue_chat',
+      data: {'sessionId': sessionId, 'query': query},
+
+    );
+
+     apiResponseChecker(response);
+
+    MessageResModel message = MessageResModel.fromJson(response.data);
+
+    return message;
+  }*/
 }
