@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gaming_startup_ai_agent/core/dependency_injection/di_providers.dart';
 import 'package:gaming_startup_ai_agent/core/service_exceptions/service_exception.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/data_source/auth_datasource.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
-import 'package:gaming_startup_ai_agent/main.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AuthDataSourceImplementation extends AuthDataSource {
@@ -33,21 +33,31 @@ class AuthDataSourceImplementation extends AuthDataSource {
           .then((value) => value.docs);
 
       //check if the username is already taken, then just sign in, else, add the user details
-      if (users.isEmpty) {
-        await firestore.collection('users').doc(username).set({
-          'username': username,
-          'uid': user.user?.uid,
-          'metadata': {
-            'createdAt': user.user?.metadata.creationTime,
-            'lastSignInAt': user.user?.metadata.lastSignInTime,
-          },
-        });
-      }
+      // if (users.isEmpty) {
+      await firestore.collection('users').doc(username).set({
+        'username': username,
+        'uid': user.user?.uid,
+        'metadata': {
+          'createdAt': user.user?.metadata.creationTime,
+          'lastSignInAt': user.user?.metadata.lastSignInTime,
+        },
+      });
+      //  }
+
+      final UserAuthInformation userInfo = UserAuthInformation(
+        username: username,
+        uid: user.user?.uid ?? '',
+        createdAt: user.user?.metadata.creationTime,
+        lastSignInAt: user.user?.metadata.lastSignInTime,
+      );
+
+      //save user information to the local storage
+      ref.read(storeProvider).saveUserInfo(userInfo);
 
       return user;
     } on FirebaseAuthException catch (e) {
-      log(e.message.toString());
-      throw ApiExceptions.unexpectedError();
+      print('An Error Occurred: ${e.message}');
+      throw ApiExceptions.fireBaseAuthException(e.message!);
     }
   }
 
@@ -61,8 +71,8 @@ class AuthDataSourceImplementation extends AuthDataSource {
           .get()
           .then((value) => UserAuthInformation.fromJson(value.data()!));
     } on FirebaseAuthException catch (e) {
-      log(e.message.toString());
-      throw ApiExceptions.unexpectedError();
+      print('An Error Occurred: ${e.message}');
+      throw ApiExceptions.fireBaseAuthException(e.message!);
     }
   }
 
@@ -76,8 +86,10 @@ class AuthDataSourceImplementation extends AuthDataSource {
           .get()
           .then((value) {
             try {
+              print(value.docs.length);
               return UserAuthInformation.fromJson(value.docs.first.data());
             } catch (e) {
+              log('An Error Occurred: ${e.toString()}');
               //auth.signOut();
               throw ApiExceptions.unexpectedError();
             }

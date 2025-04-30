@@ -16,7 +16,7 @@ class ApiConfig {
     Duration? sendTimeout,
   })  : _connectTimeout = connectTimeout ?? const Duration(seconds: 30),
         _receiveTimeout = receiveTimeout ?? const Duration(seconds: 50),
-        _sendTimeout = sendTimeout ?? const Duration(seconds: 120),
+        _sendTimeout = sendTimeout ?? const Duration(seconds: 300),
         _options = options ??
             Options(
               headers: {

@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
 import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
 import 'package:gaming_startup_ai_agent/features/chat/presentation/ui/widgets/chat_messages_builder.dart';
@@ -18,6 +19,7 @@ class ChatScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final UserAuthInformation user = ref.watch(currentUserDetails)!;
+    final scrollController = useScrollController();
     //create a listener for chatSession so that once another chat session is added, it automatically updates the selectedChat to the new session
 
     /* ref.listen<AsyncValue<List<ChatResModel>>>(
@@ -34,27 +36,32 @@ class ChatScreen extends HookConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Container(
-              width: 340,
-              height: double.maxFinite,
-              decoration: BoxDecoration(
-                border: Border.all(color: context.primary),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: context.primaryContainer.withValues(
-                      colorSpace: ColorSpace.sRGB,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(24),
+              child: Container(
+                width: 340,
+                height: double.maxFinite,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: context.primary),
+                  boxShadow: [
+                    BoxShadow(
+                      color: context.primaryContainer.withValues(
+                        colorSpace: ColorSpace.sRGB,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+                child: Stack(children: [ChatSessionList(), UserProfile()]),
               ),
-              child: Stack(children: [ChatSessionList(), UserProfile()]),
             ),
           ),
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 16, right: 16),
-              child: Stack(children: [ChatMessagesBuilder(), ChatTextfield()]),
+            child: Stack(
+              children: [
+                ChatMessagesBuilder(scrollController: scrollController),
+                ChatTextfield(scrollController: scrollController),
+              ],
             ),
           ),
         ],
