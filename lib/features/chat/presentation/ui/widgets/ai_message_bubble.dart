@@ -19,12 +19,14 @@ class AiMessageBubble extends ConsumerStatefulWidget {
   final MessageResModel? message;
   final bool isThinking;
   final bool isLast;
+  final bool isMobile;
 
-  AiMessageBubble({
+  const AiMessageBubble({
     super.key,
     required this.message,
     required this.isThinking,
     this.isLast = false,
+    this.isMobile = false,
   });
 
   @override
@@ -76,7 +78,10 @@ class _AiMessageBubbleState extends ConsumerState<AiMessageBubble> {
       child: ConstrainedBox(
         constraints: BoxConstraints(
           minWidth: 200,
-          maxWidth: screenSize.width * 0.57,
+          maxWidth:
+              widget.isMobile
+                  ? screenSize.width * 0.9
+                  : (screenSize.width * 0.57),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -89,7 +94,7 @@ class _AiMessageBubbleState extends ConsumerState<AiMessageBubble> {
                   ((widget.message?.shouldAnimate ?? false) && widget.isLast)
                       ? displayedText
                       : widget.message!.content,
-                  textAlign: TextAlign.justify,
+                  textAlign: TextAlign.left,
                   imageBuilder: (context, url) {
                     bool isImg =
                         url.endsWith('.png') ||
@@ -106,8 +111,8 @@ class _AiMessageBubbleState extends ConsumerState<AiMessageBubble> {
                               FadeInImage.memoryNetwork(
                                 placeholder: kTransparentImage,
                                 image: url,
-                                width: 400,
-                                height: 400,
+                                width: widget.isMobile?320:400,
+                                height: widget.isMobile?320:400,
                                 filterQuality: FilterQuality.low,
                                 imageErrorBuilder: (
                                   context,
@@ -115,8 +120,8 @@ class _AiMessageBubbleState extends ConsumerState<AiMessageBubble> {
                                   stackTrace,
                                 ) {
                                   return SizedBox(
-                                    height: 400,
-                                    width: 400,
+                                    height:widget.isMobile?320: 400,
+                                    width: widget.isMobile?320:400,
                                     child: CupertinoActivityIndicator(),
                                   ); //do something
                                 },
@@ -165,7 +170,9 @@ class _AiMessageBubbleState extends ConsumerState<AiMessageBubble> {
                         );
                   },
                   onLinkTab: (url, title) async {
-                    Uri uri = Uri.parse(url);
+
+                   // print(fixAdventureGamersLink(url));
+                    Uri uri = Uri.parse(fixAdventureGamersLink(url));
                     await _launchUrl(uri);
                   },
                 ),
@@ -178,7 +185,7 @@ class _AiMessageBubbleState extends ConsumerState<AiMessageBubble> {
                   // padding: EdgeInsets.zero,
                   highlightColor: Colors.transparent,
                   hoverColor: Colors.transparent,
-                  splashFactory:  NoSplash.splashFactory,
+                  splashFactory: NoSplash.splashFactory,
                   //iconSize: 14,
                   //color: context.primaryContainer,
                   onTap: () {
@@ -320,4 +327,18 @@ String removeMarkdownLinks(String text) {
     // Return only the text inside the brackets
     return match.group(0)!.startsWith('!') ? '' : match.group(1) ?? '';
   });
+}
+
+String fixAdventureGamersLink(String url) {
+ // print ('url: $url');
+
+  if (url.contains('adventuregamers.com') && url.contains('articles')) {
+  //  print('fixing url');
+    final parts = url.split('com');
+    final leftPart = parts[0];
+    final rightPart = parts[1].replaceAll('-', '/');
+
+    return '${leftPart}com$rightPart';
+  }
+  return url;
 }

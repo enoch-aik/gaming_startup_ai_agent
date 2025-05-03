@@ -30,7 +30,7 @@ class ChatResModel extends Equatable {
       ((double.tryParse(parts[2])??1745824165.785427) * 1000).toInt(),
     );
 
-    print(parts [1]);
+    //print(parts [1]);
 
     return ChatResModel(
       username: username,

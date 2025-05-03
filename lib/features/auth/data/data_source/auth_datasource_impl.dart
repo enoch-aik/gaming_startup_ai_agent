@@ -56,7 +56,7 @@ class AuthDataSourceImplementation extends AuthDataSource {
 
       return user;
     } on FirebaseAuthException catch (e) {
-      print('An Error Occurred: ${e.message}');
+      //print('An Error Occurred: ${e.message}');
       throw ApiExceptions.fireBaseAuthException(e.message!);
     }
   }
@@ -71,7 +71,7 @@ class AuthDataSourceImplementation extends AuthDataSource {
           .get()
           .then((value) => UserAuthInformation.fromJson(value.data()!));
     } on FirebaseAuthException catch (e) {
-      print('An Error Occurred: ${e.message}');
+      //print('An Error Occurred: ${e.message}');
       throw ApiExceptions.fireBaseAuthException(e.message!);
     }
   }
@@ -86,7 +86,7 @@ class AuthDataSourceImplementation extends AuthDataSource {
           .get()
           .then((value) {
             try {
-              print(value.docs.length);
+             // print(value.docs.length);
               return UserAuthInformation.fromJson(value.docs.first.data());
             } catch (e) {
               log('An Error Occurred: ${e.toString()}');

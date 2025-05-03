@@ -1,24 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
+import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
+import 'package:gaming_startup_ai_agent/features/chat/data/models/chat_res_model.dart';
 import 'package:gaming_startup_ai_agent/features/chat/data/models/supported_agent.dart';
 import 'package:gaming_startup_ai_agent/features/chat/providers.dart';
 import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
 import 'package:gaming_startup_ai_agent/src/res/styles/styles.dart';
-import 'package:gaming_startup_ai_agent/src/widgets/text.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ChatTextfield extends HookConsumerWidget {
+  final double leftPadding;
   final ScrollController scrollController;
+  final bool isMobile;
 
-  const ChatTextfield({super.key, required this.scrollController});
+  const ChatTextfield({
+    super.key,
+    required this.scrollController,
+    this.leftPadding = 0,
+    this.isMobile = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final chatTextController = useTextEditingController();
+    final UserAuthInformation user = ref.watch(currentUserDetails)!;
+    final chatHistory = ref.watch(chatHistoryProvider);
 
+    if (isMobile) {
+      ref.listen<AsyncValue<List<ChatResModel>>>(
+        getChatSessionFutureProvider(user.username),
+        (previous, next) {
+          if (next.value != null && previous?.value != null) {
+            ChatResModel? newChat = next.value!.getNewChat(previous!.value!);
+            if (newChat != null) {
+              ref.read(selectedChatProvider.notifier).state = newChat;
+            }
+          }
+        },
+      );
+    }
     final ValueNotifier<SupportedAgent?> selectedAgent = useState(null);
     return Padding(
-      padding:  EdgeInsets.only(right: 16,bottom: 16),
+      padding: EdgeInsets.only(right: 16, bottom: 16, left: leftPadding),
       child: Align(
         alignment: Alignment.bottomCenter,
         child: DecoratedBox(
@@ -33,8 +57,11 @@ class ChatTextfield extends HookConsumerWidget {
             controller: chatTextController,
             maxLines: 7,
             minLines: 1,
-            textInputAction: TextInputAction.send,
+            textInputAction: TextInputAction.newline,
             onSubmitted: (value) async {
+              //unfocus the text field
+              FocusScope.of(context).unfocus();
+
               String query = chatTextController.text;
               chatTextController.clear();
               bool isNewChat = ref.read(chatHistoryProvider.notifier).newChat;
@@ -45,7 +72,8 @@ class ChatTextfield extends HookConsumerWidget {
                         .read(chatHistoryProvider.notifier)
                         .startChat(
                           query: query,
-                          agentType: selectedAgent.value?.type.name ?? 'default',
+                          agentType:
+                              selectedAgent.value?.type.name ?? 'default',
                         )
                     : await ref
                         .read(chatHistoryProvider.notifier)
@@ -67,9 +95,11 @@ class ChatTextfield extends HookConsumerWidget {
                       ? 'Ask me anything related to games'
                       : 'Type your message here',
               hintStyle: AppStyles.textStyle.copyWith(fontSize: 14),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
 
-             /* prefixIcon:
+              /* prefixIcon:
                   (ref.watch(selectedChatProvider) == null)
                       ? Padding(
                         padding: const EdgeInsets.all(4.0),
@@ -103,22 +133,27 @@ class ChatTextfield extends HookConsumerWidget {
                         ),
                       )
                       : null,*/
-
               suffixIcon: IconButton(
                 icon: Icon(Icons.send),
                 onPressed: () async {
+                  FocusScope.of(context).unfocus();
                   String query = chatTextController.text;
                   chatTextController.clear();
-                  bool isNewChat = ref.read(chatHistoryProvider.notifier).newChat;
+                  bool isNewChat =
+                      ref.read(chatHistoryProvider.notifier).newChat;
 
                   if (query.isNotEmpty) {
                     //animated the scroll to the bottom
                     //scrollController.jumpTo(scrollController.position.maxScrollExtent);
-                    scrollController.animateTo(
-                      scrollController.position.minScrollExtent,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                    );
+                    if (chatHistory.hasValue &&
+                        (chatHistory.value?.isNotEmpty ?? false)) {
+                      scrollController.animateTo(
+                        scrollController.position.minScrollExtent,
+                        duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+
                     isNewChat
                         ? await ref
                             .read(chatHistoryProvider.notifier)
@@ -130,6 +165,24 @@ class ChatTextfield extends HookConsumerWidget {
                         : await ref
                             .read(chatHistoryProvider.notifier)
                             .continueChat(query: query);
+                    if (isNewChat) {
+                      /*if (isMobile) {
+                        ref.listen<AsyncValue<List<ChatResModel>>>(
+                          getChatSessionFutureProvider(user.username),
+                          (previous, next) {
+                            if (next.value != null && previous?.value != null) {
+                              ChatResModel? newChat = next.value!.getNewChat(
+                                previous!.value!,
+                              );
+                              if (newChat != null) {
+                                ref.read(selectedChatProvider.notifier).state =
+                                    newChat;
+                              }
+                            }
+                          },
+                        );
+                      }*/
+                    }
                   }
                   /*print(
                                   ref

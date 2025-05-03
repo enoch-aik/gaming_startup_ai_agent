@@ -7,8 +7,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ChatTile extends ConsumerWidget {
   final ChatResModel chat;
+  final bool isMobile;
 
-  const ChatTile({super.key, required this.chat});
+  const ChatTile({super.key, required this.chat, this.isMobile = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,6 +45,11 @@ class ChatTile extends ConsumerWidget {
           ref.read(selectedChatProvider.notifier).state = chat;
 
           print('Selected chat: ${ref.watch(selectedChatProvider)}');
+
+          if (isMobile) {
+            //close Drawer
+            Scaffold.of(context).closeDrawer();
+          }
           /*if (hasPreviouslySelectedAnotherChat || isDifferentChat) {
             ref.invalidate(chatHistoryProvider);
           }*/

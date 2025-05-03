@@ -39,7 +39,7 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
       apiFailure: (e, _) {
         //throw  Exception(e.message);
 
-        print(e.message);
+        //print(e.message);
         state = AsyncData([]);
         _state = AsyncData([]);
         return [];

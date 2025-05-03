@@ -9,7 +9,9 @@ import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ChatSessionList extends ConsumerWidget {
-  const ChatSessionList({super.key});
+  final bool addTopSpacing;
+  final bool isMobile;
+  const ChatSessionList({super.key, this.addTopSpacing = true, this.isMobile=false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,7 +33,7 @@ class ChatSessionList extends ConsumerWidget {
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-          ColSpacing(16),
+         if(addTopSpacing) ColSpacing(16),
           Container(
             height: 50,
             width: double.maxFinite,
@@ -44,6 +46,10 @@ class ChatSessionList extends ConsumerWidget {
                 ref.read(selectedChatProvider.notifier).state = null;
                 ref.read(chatHistoryProvider.notifier).clearChat();
                 ref.read(chatHistoryProvider.notifier).updateNewChatState(true);
+                if (isMobile) {
+                  //close Drawer
+                  Scaffold.of(context).closeDrawer();
+                }
               },
               leading: Icon(Icons.add_comment_rounded, color: context.primary),
               title: Text(
@@ -69,7 +75,7 @@ class ChatSessionList extends ConsumerWidget {
                 //reverse: true,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (context, index) {
-                  return ChatTile(chat: data[index]);
+                  return ChatTile(chat: data[index],isMobile: isMobile,);
                 },
                 separatorBuilder: (context, index) {
                   return ColSpacing(2);

@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
+import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
+import 'package:gaming_startup_ai_agent/features/chat/data/models/chat_res_model.dart';
 import 'package:gaming_startup_ai_agent/features/chat/data/models/message_res_model.dart';
 import 'package:gaming_startup_ai_agent/features/chat/presentation/ui/widgets/ai_message_bubble.dart';
 import 'package:gaming_startup_ai_agent/features/chat/presentation/ui/widgets/human_message_bubble.dart';
@@ -9,13 +12,39 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class ChatMessagesBuilder extends HookConsumerWidget {
   final ScrollController scrollController;
+  final bool addTopSpacing;
+  final bool isMobile;
 
-  const ChatMessagesBuilder({super.key, required this.scrollController});
+  const ChatMessagesBuilder({
+    super.key,
+    required this.scrollController,
+    this.addTopSpacing = true,
+    this.isMobile = false,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
+    final UserAuthInformation user = ref.watch(currentUserDetails)!;
     final chatHistory = ref.watch(chatHistoryProvider);
     Size screenSize = MediaQuery.of(context).size;
+
+
+    if (isMobile) {
+      ref.listen<AsyncValue<List<ChatResModel>>>(
+        getChatSessionFutureProvider(user.username),
+            (previous, next) {
+          if (next.value != null && previous?.value != null) {
+            ChatResModel? newChat = next.value!.getNewChat(
+              previous!.value!,
+            );
+            if (newChat != null) {
+              ref.read(selectedChatProvider.notifier).state = newChat;
+            }
+          }
+        },
+      );
+    }
 
     return ref.watch(selectedChatProvider) != null
         ? chatHistory.when(
@@ -23,11 +52,15 @@ class ChatMessagesBuilder extends HookConsumerWidget {
             // x.removeAt(0);
             final data = x.reversed.toList();
             return Padding(
-              padding: const EdgeInsets.only(bottom: 50, top: 20),
+              padding: EdgeInsets.only(bottom: 50, top: addTopSpacing ? 20 : 0),
               child: SizedBox(
                 height: screenSize.height,
                 child: ListView.separated(
-                  padding: EdgeInsets.only(right: 16, bottom: 8),
+                  padding: EdgeInsets.only(
+                    right: 16,
+                    bottom: 8,
+                    left: addTopSpacing ? 16 : 0,
+                  ),
                   reverse: true,
                   shrinkWrap: true,
                   controller: scrollController,
@@ -45,11 +78,15 @@ class ChatMessagesBuilder extends HookConsumerWidget {
                             message: currentData,
                             isThinking: false,
                             isLast: isLast,
+                            isMobile: isMobile,
                           );
                         case ChatType.system:
                           return SizedBox();
                         case ChatType.human:
-                          return HumanMessageBubble(message: currentData);
+                          return HumanMessageBubble(
+                            message: currentData,
+                            isMobile: isMobile,
+                          );
                       }
                     }
                     return Text(data[index].content);
