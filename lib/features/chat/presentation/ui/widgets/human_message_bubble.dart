@@ -9,13 +9,18 @@ import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
 
 class HumanMessageBubble extends StatelessWidget {
   final MessageResModel message;
+  final bool isMobile;
 
-  const HumanMessageBubble({super.key, required this.message});
+  const HumanMessageBubble({
+    super.key,
+    required this.message,
+    this.isMobile = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
-    return message.content ==(technicalPrototypePrompt)
+    return message.content == (technicalPrototypePrompt)
         ? SizedBox()
         : Align(
           alignment: Alignment.bottomRight,
@@ -26,7 +31,10 @@ class HumanMessageBubble extends StatelessWidget {
                 padding: EdgeInsets.all(8),
                 constraints: BoxConstraints(
                   minWidth: 70,
-                  maxWidth: screenSize.width * 0.4,
+                  maxWidth:
+                      isMobile
+                          ? (screenSize.width * 0.7)
+                          : (screenSize.width * 0.4),
                 ),
                 decoration: BoxDecoration(
                   color: context.primaryContainer,
@@ -35,11 +43,12 @@ class HumanMessageBubble extends StatelessWidget {
                 child: SelectionArea(child: Text(message.content)),
               ),
               ColSpacing(4),
-              Row(mainAxisAlignment: MainAxisAlignment.end,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   InkWell(
                     //padding: EdgeInsets.zero,
-                    splashFactory:  NoSplash.splashFactory,
+                    splashFactory: NoSplash.splashFactory,
                     highlightColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                     //color: context.primaryContainer,
@@ -47,10 +56,7 @@ class HumanMessageBubble extends StatelessWidget {
                       try {
                         Clipboard.setData(
                           ClipboardData(
-                            text:
-                            removeMarkdownLinks(
-                              message.content,
-                            ).trim(),
+                            text: removeMarkdownLinks(message.content).trim(),
                           ),
                         ).then((_) {
                           if (context.mounted) {
@@ -64,9 +70,11 @@ class HumanMessageBubble extends StatelessWidget {
                         });
                       } catch (_) {}
                     },
-                    child: SvgPicture.asset('assets/svg/copy_outlined.svg',
-                    color: context.primaryContainer,
-                    width: 16,),
+                    child: SvgPicture.asset(
+                      'assets/svg/copy_outlined.svg',
+                      color: context.primaryContainer,
+                      width: 16,
+                    ),
                   ),
                 ],
               ),

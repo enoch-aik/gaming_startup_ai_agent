@@ -1,5 +1,13 @@
 .PHONY: clean refresh build-runner build_adb build-apk clean-ios shorebird-patch-android shorebird-patch-ios build-appbundle shorebird-build-apk
 
+deploy-web:
+	@echo "Building Web"
+	flutter build web --release --wasm
+	@echo "Building Complete"
+	@echo "Deploying to Firebase Hosting"
+	firebase deploy
+	@echo "Deploying Complete"
+
 shorebird-release-android:
 	@echo "Building Shorebird App for Android"
 	shorebird release android

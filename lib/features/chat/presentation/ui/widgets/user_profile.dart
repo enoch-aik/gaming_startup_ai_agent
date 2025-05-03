@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gaming_startup_ai_agent/core/dependency_injection/di_providers.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
 import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
+import 'package:gaming_startup_ai_agent/features/chat/providers.dart';
 import 'package:gaming_startup_ai_agent/main.dart';
 import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
 import 'package:gaming_startup_ai_agent/src/extensions/string.dart';
@@ -12,7 +13,9 @@ import 'package:gaming_startup_ai_agent/src/widgets/loader/loader.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class UserProfile extends ConsumerWidget {
-  const UserProfile({super.key});
+  final double borderRadius;
+
+  const UserProfile({super.key, this.borderRadius = 16});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -27,7 +30,7 @@ class UserProfile extends ConsumerWidget {
           padding: EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
             color: context.primaryContainer,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
           child: ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: 8),
@@ -65,8 +68,18 @@ class UserProfile extends ConsumerWidget {
                         });
 
                         if (context.mounted) Loader.hide(context);
-
-                        if (context.mounted) context.replaceRoute(LoginRoute());
+                        if (context.mounted) {
+                          context.router
+                              .replaceAll([OnboardingRoute()])
+                              .whenComplete(() {
+                                //invalidate all providers
+                                ref.invalidate(chatHistoryProvider);
+                                ref.invalidate(selectedChatProvider);
+                                ref.invalidate(getChatSessionFutureProvider);
+                                ref.invalidate(currentUserProvider);
+                                ref.invalidate(currentUserDetails);
+                              });
+                        }
                       },
                     ),
                     /*PopupMenuItem(

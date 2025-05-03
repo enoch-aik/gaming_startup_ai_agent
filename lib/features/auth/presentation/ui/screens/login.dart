@@ -5,6 +5,7 @@ import 'package:gaming_startup_ai_agent/core/dependency_injection/di_providers.d
 import 'package:gaming_startup_ai_agent/core/service_exceptions/service_exception.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
 import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
+import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
 import 'package:gaming_startup_ai_agent/src/router/router.gr.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/loader/loader.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
@@ -34,7 +35,7 @@ class LoginScreen extends HookConsumerWidget {
             result.when(
               success: (data) {
                 ref.read(currentUserDetails.notifier).state = data;
-                context.replaceRoute(ChatRoute());
+                context.router.replaceAll([ChatRoute()]);
               },
               apiFailure: (e, _) {},
             );
@@ -48,6 +49,7 @@ class LoginScreen extends HookConsumerWidget {
     return Form(
       key: formKey,
       child: Scaffold(
+        appBar: AppBar(backgroundColor: context.surface),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -84,7 +86,7 @@ class LoginScreen extends HookConsumerWidget {
 
                     if (context.mounted) {
                       Loader.hide(context);
-                      context.replaceRoute(ChatRoute());
+                      //context.replaceRoute(ChatRoute());
                       WidgetsBinding.instance.addPostFrameCallback((_) {
                         result.when(
                           success: (data) async {
@@ -95,7 +97,7 @@ class LoginScreen extends HookConsumerWidget {
                               success: (data) {
                                 ref.read(currentUserDetails.notifier).state =
                                     data;
-                                context.replaceRoute(ChatRoute());
+                                context.router.replaceAll([ChatRoute()]);
                               },
                               apiFailure: (e, _) {},
                             );
