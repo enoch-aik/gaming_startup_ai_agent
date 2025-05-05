@@ -333,106 +333,115 @@ class OnboardingScreen extends StatelessWidget {
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(text: '\u2022 '),
-                                        TextSpan(text: 'This '),
-                                        TextSpan(
-                                          text: 'AI Agent-Chatbot',
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(text: '\u2022 '),
+                                          TextSpan(text: 'This '),
+                                          TextSpan(
+                                            text: 'AI Agent-Chatbot',
 
-                                          style: AppStyles.textStyle.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 20,
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20,
+                                            ),
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              ' is designed to support Video Game Startups and Indie Game Developers in testing their ideas at the ',
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              'Technical or Digital Prototyping',
+                                          TextSpan(
+                                            text:
+                                                ' is designed to support Video Game Startups and Indie Game Developers in testing their ideas at the ',
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                'Technical or Digital Prototyping',
 
-                                          style: AppStyles.textStyle.copyWith(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 20,
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20,
+                                            ),
                                           ),
+                                          TextSpan(
+                                            text: ' stage of development.',
+                                          ),
+                                        ],
+                                        style: AppStyles.textStyle.copyWith(
+                                          fontSize: 22,
                                         ),
-                                        TextSpan(
-                                          text: ' stage of development.',
-                                        ),
-                                      ],
-                                      style: AppStyles.textStyle.copyWith(
-                                        fontSize: 22,
                                       ),
                                     ),
                                   ),
                                   ColSpacing(8),
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(text: '\u2022 '),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(text: '\u2022 '),
 
-                                        TextSpan(
-                                          text:
-                                              'Technical or Digital Prototyping is the '
-                                              'stage where you test your game idea '
-                                              'and concept to assess how feasibility'
-                                              ' of your game. This can span from knowing ',
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              'the current market or potential userbase of your game, ',
-                                          style: AppStyles.textStyle.copyWith(
-                                            fontSize: 20,
-                                            fontStyle: FontStyle.italic,
+                                          TextSpan(
+                                            text:
+                                                'Technical or Digital Prototyping is the '
+                                                'stage where you test your game idea '
+                                                'and concept to assess how feasibility'
+                                                ' of your game. This can span from knowing ',
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              ' how complex it would be to develop the game, ',
-                                          style: AppStyles.textStyle.copyWith(
-                                            fontSize: 20,
-                                            fontStyle: FontStyle.italic,
+                                          TextSpan(
+                                            text:
+                                                'the current market or potential userbase of your game, ',
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontSize: 20,
+                                              fontStyle: FontStyle.italic,
+                                            ),
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text:
-                                              'what skill-set are needed to develop the game, ',
-                                          style: AppStyles.textStyle.copyWith(
-                                            fontSize: 20,
-                                            fontStyle: FontStyle.italic,
+                                          TextSpan(
+                                            text:
+                                                ' how complex it would be to develop the game, ',
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontSize: 20,
+                                              fontStyle: FontStyle.italic,
+                                            ),
                                           ),
-                                        ),
-                                        TextSpan(text: 'and '),
-                                        TextSpan(
-                                          text:
-                                              'how much it would cost to develop the game.',
-                                          style: AppStyles.textStyle.copyWith(
-                                            fontSize: 20,
-                                            fontStyle: FontStyle.italic,
+                                          TextSpan(
+                                            text:
+                                                'what skill-set are needed to develop the game, ',
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontSize: 20,
+                                              fontStyle: FontStyle.italic,
+                                            ),
                                           ),
+                                          TextSpan(text: 'and '),
+                                          TextSpan(
+                                            text:
+                                                'how much it would cost to develop the game.',
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontSize: 20,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                        ],
+                                        style: AppStyles.textStyle.copyWith(
+                                          fontSize: 22,
                                         ),
-                                      ],
-                                      style: AppStyles.textStyle.copyWith(
-                                        fontSize: 22,
                                       ),
                                     ),
                                   ),
                                   ColSpacing(8),
-                                  Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(text: '\u2022 '),
-                                        TextSpan(
-                                          text:
-                                              'Feel free to test the AI Agent-Chatbot with any game idea you have in mind (perhaps a game you are currently developing§)'
-                                              'The AI Agent-Chatbot will help you to assess the feasibility of your game idea by providing you with the information you need.',
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(text: '\u2022 '),
+                                          TextSpan(
+                                            text:
+                                                'Feel free to test the AI Agent-Chatbot with any game idea you have in mind (perhaps a game you are currently developing§)'
+                                                'The AI Agent-Chatbot will help you to assess the feasibility of your game idea by providing you with the information you need.',
+                                          ),
+                                        ],
+                                        style: AppStyles.textStyle.copyWith(
+                                          fontSize: 22,
                                         ),
-                                      ],
-                                      style: AppStyles.textStyle.copyWith(
-                                        fontSize: 22,
                                       ),
                                     ),
                                   ),
@@ -456,6 +465,7 @@ class OnboardingScreen extends StatelessWidget {
                                   ),
                                   ColSpacing(16),
                                   Row(
+                                    spacing: 16,
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
