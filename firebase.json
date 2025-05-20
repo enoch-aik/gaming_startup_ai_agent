@@ -1,0 +1,35 @@
+{
+  "flutter": {
+    "platforms": {
+      "macos": {
+        "default": {
+          "projectId": "game-startup-ai-agent",
+          "appId": "1:887836983106:ios:e47c5c348b291a213d12db",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "game-startup-ai-agent",
+          "configurations": {
+            "macos": "1:887836983106:ios:e47c5c348b291a213d12db",
+            "web": "1:887836983106:web:00f0e83a92ec130f3d12db",
+            "windows": "1:887836983106:web:2bc4fd676f57bce73d12db"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "source": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "frameworksBackend": {
+      "region": "europe-west1"
+    }
+  }
+}
