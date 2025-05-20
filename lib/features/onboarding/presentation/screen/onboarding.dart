@@ -6,16 +6,18 @@ import 'package:gaming_startup_ai_agent/features/onboarding/presentation/widgets
 import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
 import 'package:gaming_startup_ai_agent/src/res/styles/styles.dart';
 import 'package:gaming_startup_ai_agent/src/router/router.gr.dart';
+import 'package:gaming_startup_ai_agent/src/widgets/alert_dialog.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/row_spacing.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/text.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 @RoutePage(/*name: 'onboarding'*/)
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends ConsumerWidget {
   const OnboardingScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     Size size = MediaQuery.of(context).size;
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -435,7 +437,7 @@ class OnboardingScreen extends StatelessWidget {
                                           TextSpan(text: '\u2022 '),
                                           TextSpan(
                                             text:
-                                                'Feel free to test the AI Agent-Chatbot with any game idea you have in mind (perhaps a game you are currently developing§)'
+                                                'Feel free to test the AI Agent-Chatbot with any game idea you have in mind (perhaps a game you are currently developing)'
                                                 'The AI Agent-Chatbot will help you to assess the feasibility of your game idea by providing you with the information you need.',
                                           ),
                                         ],
@@ -467,7 +469,7 @@ class OnboardingScreen extends StatelessWidget {
                                   Row(
                                     spacing: 16,
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                        MainAxisAlignment.spaceEvenly,
                                     children: [
                                       AgentCapability(
                                         svgPath: 'assets/svg/global-search.svg',
@@ -503,6 +505,55 @@ class OnboardingScreen extends StatelessWidget {
                                       iconAlignment: IconAlignment.end,
                                       onPressed: () {
                                         context.router.push(LoginRoute());
+                                        //tell users that the evaluation of the AI agent is now over
+
+                                       /* showMessageAlertDialog(
+                                          context,
+                                          text:
+                                              'Thank you so much for participating in this study 🫡\n\nThe evaluation for this AI agent is now over.',
+                                          actionText: 'Got it',
+                                          width: 400,
+                                          onTap: (){
+                                            Navigator.of(
+                                              context,
+                                            ).pop();
+                                          }
+                                        );*/
+                                        /* showAnimatedDialog(
+                                          context,
+                                          SizedBox(
+                                            height: 200,
+                                            width: 400,
+                                            child: Material(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  KText(
+                                                    'Thank you for participating in this study.',
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                  ColSpacing(8),
+
+                                                  KText(
+                                                    'The evaluation of the AI agent is now over.',
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+
+                                                  ColSpacing(16),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(
+                                                        context,
+                                                      ).pop();
+                                                    },
+                                                    child: Text('Got it'),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );*/
                                       },
                                       label: Text('Try it out'),
                                       icon: Icon(Icons.arrow_forward_rounded),

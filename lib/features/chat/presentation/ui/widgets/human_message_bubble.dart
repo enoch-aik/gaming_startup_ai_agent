@@ -5,6 +5,7 @@ import 'package:gaming_startup_ai_agent/features/chat/data/models/message_res_mo
 import 'package:gaming_startup_ai_agent/features/chat/presentation/ui/widgets/ai_message_bubble.dart';
 import 'package:gaming_startup_ai_agent/src/constants/prompt.dart';
 import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
+import 'package:gaming_startup_ai_agent/src/res/styles/styles.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
 
 class HumanMessageBubble extends StatelessWidget {
@@ -40,7 +41,7 @@ class HumanMessageBubble extends StatelessWidget {
                   color: context.primaryContainer,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: SelectionArea(child: Text(message.content)),
+                child: SelectionArea(child: Text(message.content,style: AppStyles.textStyle.copyWith(fontSize: 15),)),
               ),
               ColSpacing(4),
               Row(

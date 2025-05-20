@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gaming_startup_ai_agent/features/chat/data/models/message_res_model.dart';
 import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
+import 'package:gaming_startup_ai_agent/src/res/styles/styles.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
 import 'package:gpt_markdown/gpt_markdown.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -95,6 +96,7 @@ class _AiMessageBubbleState extends ConsumerState<AiMessageBubble> {
                       ? displayedText
                       : widget.message!.content,
                   textAlign: TextAlign.left,
+                  style: AppStyles.textStyle.copyWith(fontSize: 15),
                   imageBuilder: (context, url) {
                     bool isImg =
                         url.endsWith('.png') ||
@@ -167,6 +169,7 @@ class _AiMessageBubbleState extends ConsumerState<AiMessageBubble> {
                               ),
                             ],
                           ),
+                      style: AppStyles.textStyle.copyWith(fontSize: 15),
                         );
                   },
                   onLinkTab: (url, title) async {
@@ -339,6 +342,14 @@ String fixAdventureGamersLink(String url) {
     final rightPart = parts[1].replaceAll('-', '/');
 
     return '${leftPart}com$rightPart';
+  }
+
+  if (url.contains('www.gamedeveloper.com/design')){
+    final parts = url.split('design');
+    final leftPart = parts[0];
+    final rightPart = parts[1].substring(1);
+    
+    return '${leftPart}design/$rightPart';
   }
   return url;
 }

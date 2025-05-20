@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gaming_startup_ai_agent/core/dependency_injection/di_providers.dart';
 import 'package:gaming_startup_ai_agent/core/service_exceptions/service_exception.dart';
+import 'package:gaming_startup_ai_agent/core/validators/text_field_validators.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
 import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
 import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
@@ -56,13 +57,20 @@ class LoginScreen extends HookConsumerWidget {
             children: [
               SizedBox(
                 width: 178,
-                height: 36,
+                //height: 36,
                 child: TextFormField(
                   controller: usernameController,
                   validator: (value) {
                     if (value?.isEmpty ?? true) {
                       return 'Please enter a username to continue';
                     }
+                    if (value != null && value.isNotEmpty) {
+                      if (!TextFieldValidator.nameExp.hasMatch(value)) {
+                        return 'Please enter a valid username without symbols or special characters';
+                      }
+                    }
+
+                    return null;
                   },
                   decoration: InputDecoration(
                     hintText: 'Enter username',
