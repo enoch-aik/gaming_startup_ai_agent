@@ -89,7 +89,7 @@ class LoginScreen extends HookConsumerWidget {
                   if (formKey.currentState!.validate()) {
                     Loader.show(context);
                     final result = await auth.anonymousSignIn(
-                      usernameController.text,
+                      usernameController.text.trim(),
                     );
 
                     if (context.mounted) {

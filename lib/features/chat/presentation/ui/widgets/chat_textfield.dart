@@ -59,7 +59,7 @@ class ChatTextfield extends HookConsumerWidget {
       }
     }
 
-    late final _focusNode = FocusNode(
+    late final focusNode = FocusNode(
       onKeyEvent: (FocusNode node, KeyEvent evt) {
         if (!HardwareKeyboard.instance.isShiftPressed &&
             evt.logicalKey.keyLabel == 'Enter') {
@@ -100,7 +100,8 @@ class ChatTextfield extends HookConsumerWidget {
             ),
           ),
           child: TextField(
-            focusNode: _focusNode,
+            //focusNode: focusNode,
+            focusNode: focusNodeTemplate(controller: chatTextController, callback: sendMessage),
             controller: chatTextController,
             maxLines: 7,
             minLines: 1,
@@ -223,4 +224,47 @@ class ChatTextfield extends HookConsumerWidget {
       ),
     );
   }
+}
+
+
+FocusNode focusNodeTemplate({
+  required TextEditingController controller,
+  required Function callback,
+}) {
+  FocusNode focusNode = FocusNode();
+
+  onKeyEvent(
+      FocusNode node,
+      KeyEvent event,
+      ) {
+    if (event is KeyDownEvent) {
+      bool isEnter = event.logicalKey == LogicalKeyboardKey.enter;
+
+      bool isShift = HardwareKeyboard.instance.logicalKeysPressed.contains(LogicalKeyboardKey.shiftLeft) ||
+          HardwareKeyboard.instance.logicalKeysPressed.contains(LogicalKeyboardKey.shiftRight);
+
+      if (isEnter && !isShift) {
+        callback();
+        return KeyEventResult.handled;
+      } else if (isEnter && isShift) {
+        controller.text += "\n";
+        return KeyEventResult.handled;
+      } else {
+        return KeyEventResult.ignored;
+      }
+    } else {
+      return KeyEventResult.ignored;
+    }
+  }
+
+  // Attach the default key event handler for text input actions
+  focusNode.onKeyEvent = (node, event) {
+    if (event.logicalKey == LogicalKeyboardKey.backspace) {
+      // Allow the default behavior for delete/backspace
+      return KeyEventResult.ignored;
+    }
+    return onKeyEvent(node, event);
+  };
+
+  return focusNode;
 }
