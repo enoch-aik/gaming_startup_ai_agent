@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:gaming_startup_ai_agent/core/service_exceptions/service_exception.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
@@ -7,6 +8,7 @@ import 'package:gaming_startup_ai_agent/features/chat/data/models/chat_res_model
 import 'package:gaming_startup_ai_agent/features/chat/data/models/message_res_model.dart';
 import 'package:gaming_startup_ai_agent/features/chat/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MessageState extends AsyncNotifier<List<MessageResModel>> {
   late final chatRepo = ref.read(chatRepoProvider);
@@ -24,7 +26,7 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
 
   @override
   FutureOr<List<MessageResModel>> build() async {
-   // await Future.delayed(Duration(milliseconds: 500));
+    // await Future.delayed(Duration(milliseconds: 500));
     selectedChat = ref.watch(selectedChatProvider)!;
 
     final result = await chatRepo.getChatHistory(selectedChat.rawData);
@@ -136,5 +138,33 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
   //update new chat state
   void updateNewChatState(bool value) {
     newChat = value;
+  }
+
+  //get all chat list, and create a chat_export(date).txt file and allow download
+  File exportChatHistory() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final currentUser = ref.read(currentUserDetails).username??'user';
+    final currentDateInDDMMYYYY = DateTime
+        .now()
+        .toIso8601String()
+        .split('T')
+        .first
+        .replaceAll('-', '');
+    final File file = File(
+      '${directory.path}/chat_export_$currentUser' +
+          '_' +
+          '$currentDateInDDMMYYYY.txt',
+    );
+
+    final allChats = state.value!;
+    StringBuffer buffer = StringBuffer();
+    for (var message in allChats) {
+      String sender = message.type == ChatType.human ? "User" : "AI";
+      buffer.writeln("$sender: ${message.content}\n");
+    }
+
+    //create a .txt file and allow download
+    await file.writeAsString(buffer.toString());
+    return file;
   }
 }

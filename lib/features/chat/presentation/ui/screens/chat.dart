@@ -13,6 +13,7 @@ import 'package:gaming_startup_ai_agent/features/chat/presentation/ui/widgets/us
 import 'package:gaming_startup_ai_agent/features/chat/providers.dart';
 import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:file_saver/file_saver.dart';
 
 @RoutePage()
 class ChatScreen extends HookConsumerWidget {
@@ -33,101 +34,123 @@ class ChatScreen extends HookConsumerWidget {
       },
     );*/
 
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final isMobile = constraints.maxWidth < 600;
-        Size screenSize = MediaQuery.of(context).size;
+        Size screenSize = MediaQuery
+            .of(context)
+            .size;
 
         return isMobile
             ? Scaffold(
-              appBar: AppBar(
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 4.0),
-                    child: InkWell(
-                      splashFactory: NoSplash.splashFactory,
-                      hoverColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      child: Icon(Icons.edit_note_rounded, size: 32),
-                      onTap: () {
-                        ref.read(selectedChatProvider.notifier).state = null;
-                        ref.read(chatHistoryProvider.notifier).clearChat();
-                        ref
-                            .read(chatHistoryProvider.notifier)
-                            .updateNewChatState(true);
-                      },
-                    ),
-                  ),
+          appBar: AppBar(
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: InkWell(
+                  splashFactory: NoSplash.splashFactory,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child: Icon(Icons.edit_note_rounded, size: 32),
+                  onTap: () {
+                    ref
+                        .read(selectedChatProvider.notifier)
+                        .state = null;
+                    ref.read(chatHistoryProvider.notifier).clearChat();
+                    ref
+                        .read(chatHistoryProvider.notifier)
+                        .updateNewChatState(true);
+                  },
+                ),
+              ),
+              //create all chats in a .txt file and allow download
+              Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: InkWell(
+                  splashFactory: NoSplash.splashFactory,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child: Icon(Icons.copy_rounded, size: 32),
+                  onTap: () async {
+                    final file = ref
+                        .read(chatHistoryProvider.notifier)
+                        .exportChatHistory();
+
+                    await FileSaver.instance.saveFile(
+                      name: 'chat_export_${user.username}',
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          drawer: Drawer(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 8.0),
+              child: Stack(
+                children: [
+                  ChatSessionList(isMobile: true),
+                  UserProfile(borderRadius: 16),
                 ],
               ),
-              drawer: Drawer(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-                child: Padding(
-                  padding: EdgeInsets.only(bottom: 8.0),
-                  child: Stack(
-                    children: [
-                      ChatSessionList(isMobile: true),
-                      UserProfile(borderRadius: 16),
-                    ],
+            ),
+          ),
+          body: SizedBox(
+            height: screenSize.height,
+            child: Stack(
+              children: [
+                ChatMessagesBuilder(
+                  scrollController: scrollController,
+                  isMobile: true,
+                ),
+                ChatTextfield(
+                  scrollController: scrollController,
+                  leftPadding: 16,
+                  isMobile: true,
+                ),
+              ],
+            ),
+          ),
+        )
+            : Scaffold(
+          body: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: Container(
+                    width: 340,
+                    height: double.maxFinite,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(color: context.primary),
+                      boxShadow: [
+                        BoxShadow(
+                          color: context.primaryContainer.withValues(
+                            colorSpace: ColorSpace.sRGB,
+                          ),
+                        ),
+                      ],
+                    ),
+                    child: Stack(
+                      children: [ChatSessionList(), UserProfile()],
+                    ),
                   ),
                 ),
               ),
-              body: SizedBox(
-                height: screenSize.height,
+              Expanded(
                 child: Stack(
                   children: [
-                    ChatMessagesBuilder(
-                      scrollController: scrollController,
-                      isMobile: true,
-                    ),
-                    ChatTextfield(
-                      scrollController: scrollController,
-                      leftPadding: 16,
-                      isMobile: true,
-                    ),
+                    ChatMessagesBuilder(scrollController: scrollController),
+                    ChatTextfield(scrollController: scrollController),
                   ],
                 ),
               ),
-            )
-            : Scaffold(
-              body: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: Container(
-                        width: 340,
-                        height: double.maxFinite,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: context.primary),
-                          boxShadow: [
-                            BoxShadow(
-                              color: context.primaryContainer.withValues(
-                                colorSpace: ColorSpace.sRGB,
-                              ),
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          children: [ChatSessionList(), UserProfile()],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        ChatMessagesBuilder(scrollController: scrollController),
-                        ChatTextfield(scrollController: scrollController),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
+            ],
+          ),
+        );
       },
     );
   }

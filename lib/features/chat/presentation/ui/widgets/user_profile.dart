@@ -45,7 +45,7 @@ class UserProfile extends ConsumerWidget {
               key: buttonKey,
               onPressed: () {
                 final RenderBox renderBox =
-                    buttonKey.currentContext?.findRenderObject() as RenderBox;
+                buttonKey.currentContext?.findRenderObject() as RenderBox;
                 final Size size = renderBox.size;
                 final Offset offset = renderBox.localToGlobal(Offset.zero);
                 showMenu(
@@ -63,7 +63,9 @@ class UserProfile extends ConsumerWidget {
                         Loader.show(context);
 
                         await auth.signOut().then((_) {
-                          ref.read(currentUserProvider.notifier).state = null;
+                          ref
+                              .read(currentUserProvider.notifier)
+                              .state = null;
                           ref.read(storeProvider).removeAll();
                         });
 
@@ -72,13 +74,13 @@ class UserProfile extends ConsumerWidget {
                           context.router
                               .replaceAll([OnboardingRoute()])
                               .whenComplete(() {
-                                //invalidate all providers
-                                ref.invalidate(chatHistoryProvider);
-                                ref.invalidate(selectedChatProvider);
-                                ref.invalidate(getChatSessionFutureProvider);
-                                ref.invalidate(currentUserProvider);
-                                ref.invalidate(currentUserDetails);
-                              });
+                            //invalidate all providers
+                            ref.invalidate(chatHistoryProvider);
+                            ref.invalidate(selectedChatProvider);
+                            ref.invalidate(getChatSessionFutureProvider);
+                            ref.invalidate(currentUserProvider);
+                            ref.invalidate(currentUserDetails);
+                          });
                         }
                       },
                     ),
