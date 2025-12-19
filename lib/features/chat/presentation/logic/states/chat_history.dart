@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:gaming_startup_ai_agent/core/service_exceptions/service_exception.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
 import 'package:gaming_startup_ai_agent/features/auth/providers.dart';
 import 'package:gaming_startup_ai_agent/features/chat/data/models/chat_res_model.dart';
@@ -141,11 +140,12 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
   }
 
   //get all chat list, and create a chat_export(date).txt file and allow download
-  File exportChatHistory() async {
-    final directory = await getApplicationDocumentsDirectory();
-    final currentUser = ref.read(currentUserDetails).username??'user';
-    final currentDateInDDMMYYYY = DateTime
-        .now()
+  Future<File> exportChatHistory() async {
+    //get storage directory of the device
+
+    final directory = await getTemporaryDirectory();
+    final currentUser = ref.read(currentUserDetails)?.username ?? 'user';
+    final currentDateInDDMMYYYY = DateTime.now()
         .toIso8601String()
         .split('T')
         .first

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:gaming_startup_ai_agent/core/dependency_injection/di_providers.dart';
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
@@ -45,7 +46,7 @@ class UserProfile extends ConsumerWidget {
               key: buttonKey,
               onPressed: () {
                 final RenderBox renderBox =
-                buttonKey.currentContext?.findRenderObject() as RenderBox;
+                    buttonKey.currentContext?.findRenderObject() as RenderBox;
                 final Size size = renderBox.size;
                 final Offset offset = renderBox.localToGlobal(Offset.zero);
                 showMenu(
@@ -63,9 +64,7 @@ class UserProfile extends ConsumerWidget {
                         Loader.show(context);
 
                         await auth.signOut().then((_) {
-                          ref
-                              .read(currentUserProvider.notifier)
-                              .state = null;
+                          ref.read(currentUserProvider.notifier).state = null;
                           ref.read(storeProvider).removeAll();
                         });
 
@@ -74,22 +73,29 @@ class UserProfile extends ConsumerWidget {
                           context.router
                               .replaceAll([OnboardingRoute()])
                               .whenComplete(() {
-                            //invalidate all providers
-                            ref.invalidate(chatHistoryProvider);
-                            ref.invalidate(selectedChatProvider);
-                            ref.invalidate(getChatSessionFutureProvider);
-                            ref.invalidate(currentUserProvider);
-                            ref.invalidate(currentUserDetails);
-                          });
+                                //invalidate all providers
+                                ref.invalidate(chatHistoryProvider);
+                                ref.invalidate(selectedChatProvider);
+                                ref.invalidate(getChatSessionFutureProvider);
+                                ref.invalidate(currentUserProvider);
+                                ref.invalidate(currentUserDetails);
+                              });
                         }
                       },
                     ),
-                    /*PopupMenuItem(
-                      child: Text('Settings'),
-                      onTap: () {
-                        // Navigate to settings
+                    PopupMenuItem(
+                      child: Text('Export Chat'),
+                      onTap: () async {
+                        final file =
+                            await ref
+                                .read(chatHistoryProvider.notifier)
+                                .exportChatHistory();
+
+                        await FileSaver.instance.saveFile(
+                          name: 'chat_export_${user.username}',filePath: file.path
+                        );
                       },
-                    ),*/
+                    ),
                   ],
                 );
               },

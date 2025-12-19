@@ -63,7 +63,7 @@ class ChatScreen extends HookConsumerWidget {
                   },
                 ),
               ),
-              //create all chats in a .txt file and allow download
+             /* //create all chats in a .txt file and allow download
               Padding(
                 padding: const EdgeInsets.only(right: 4.0),
                 child: InkWell(
@@ -81,7 +81,7 @@ class ChatScreen extends HookConsumerWidget {
                     );
                   },
                 ),
-              ),
+              ),*/
             ],
           ),
           drawer: Drawer(

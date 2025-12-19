@@ -172,7 +172,7 @@ class _AiMessageBubbleState extends ConsumerState<AiMessageBubble> {
                       style: AppStyles.textStyle.copyWith(fontSize: 15),
                         );
                   },
-                  onLinkTab: (url, title) async {
+                  onLinkTap: (url, title) async {
 
                    // print(fixAdventureGamersLink(url));
                     Uri uri = Uri.parse(fixAdventureGamersLink(url));
