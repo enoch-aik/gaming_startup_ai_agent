@@ -8,6 +8,7 @@ import 'package:gaming_startup_ai_agent/features/chat/data/models/message_res_mo
 import 'package:gaming_startup_ai_agent/features/chat/providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:universal_html/html.dart' as html;
 
 class MessageState extends AsyncNotifier<List<MessageResModel>> {
   late final chatRepo = ref.read(chatRepoProvider);
@@ -164,7 +165,31 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
     }
 
     //create a .txt file and allow download
-    await file.writeAsString(buffer.toString());
-    return file;
+    //await file.writeAsString(buffer.toString());
+    //return file;
+
+    final bytes = utf8.encode(buffer.toString());
+
+    final blob = html.Blob([bytes]);
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    final anchor = html.document.createElement('a') as html.AnchorElement
+      ..href = url
+      ..style.display = 'none'
+      ..download =
+          'chat_history ${DateTime
+          .now()
+          .day}-${DateTime
+          .now()
+          .month}-${DateTime
+          .now()
+          .year}.txt';
+    html.document.body!.children.add(anchor);
+
+    // download
+    anchor.click();
+
+    // cleanup
+    html.document.body!.children.remove(anchor);
+    html.Url.revokeObjectUrl(url);
   }
 }
