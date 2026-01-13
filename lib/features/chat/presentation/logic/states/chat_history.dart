@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:gaming_startup_ai_agent/features/auth/data/models/user_auth_information.dart';
@@ -141,7 +142,7 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
   }
 
   //get all chat list, and create a chat_export(date).txt file and allow download
-  Future<File> exportChatHistory() async {
+  Future<void> exportChatHistory() async {
     //get storage directory of the device
 
     final directory = await getTemporaryDirectory();
@@ -189,6 +190,80 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
     anchor.click();
 
     // cleanup
+    html.document.body!.children.remove(anchor);
+    html.Url.revokeObjectUrl(url);
+  }
+
+  /// Export chat messages to a txt file for Flutter Web
+  /// Downloads a formatted text file containing the conversation history
+  Future<void> exportChatToTxt() async {
+    // Get the current chat messages
+    final messages = state.value ?? [];
+    
+    if (messages.isEmpty) {
+      // No messages to export
+      return;
+    }
+
+    // Get current user and generate timestamp
+    final currentUser = ref.read(currentUserDetails)?.username ?? 'user';
+    final now = DateTime.now();
+    final dateStr = '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
+    final timeStr = '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}';
+    
+    // Create a formatted text buffer
+    final buffer = StringBuffer();
+    
+    // Add header
+    buffer.writeln('=' * 60);
+    buffer.writeln('Chat Export - $currentUser');
+    buffer.writeln('Date: ${now.day}/${now.month}/${now.year}');
+    buffer.writeln('Time: ${now.hour}:${now.minute.toString().padLeft(2, '0')}');
+    if (selectedChat.title != null && selectedChat.title!.isNotEmpty) {
+      buffer.writeln('Chat: ${selectedChat.title}');
+    }
+    buffer.writeln('=' * 60);
+    buffer.writeln();
+    
+    // Add messages
+    for (var i = 0; i < messages.length; i++) {
+      final message = messages[i];
+      final sender = message.type == ChatType.human ? 'You' : 'AI Assistant';
+      
+      buffer.writeln('[$sender]');
+      buffer.writeln(message.content);
+      buffer.writeln();
+      
+      // Add separator between messages (but not after the last one)
+      if (i < messages.length - 1) {
+        buffer.writeln('-' * 60);
+        buffer.writeln();
+      }
+    }
+    
+    // Add footer
+    buffer.writeln();
+    buffer.writeln('=' * 60);
+    buffer.writeln('End of Chat Export');
+    buffer.writeln('Total Messages: ${messages.length}');
+    buffer.writeln('=' * 60);
+    
+    // Convert to bytes and create blob for download
+    final bytes = utf8.encode(buffer.toString());
+    final blob = html.Blob([bytes], 'text/plain');
+    final url = html.Url.createObjectUrlFromBlob(blob);
+    
+    // Create download link and trigger download
+    final fileName = 'chat_${currentUser}_${dateStr}_$timeStr.txt';
+    final anchor = html.document.createElement('a') as html.AnchorElement
+      ..href = url
+      ..style.display = 'none'
+      ..download = fileName;
+    
+    html.document.body!.children.add(anchor);
+    anchor.click();
+    
+    // Cleanup
     html.document.body!.children.remove(anchor);
     html.Url.revokeObjectUrl(url);
   }
