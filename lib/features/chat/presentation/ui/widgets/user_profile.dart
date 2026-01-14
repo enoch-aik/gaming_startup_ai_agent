@@ -86,14 +86,13 @@ class UserProfile extends ConsumerWidget {
                     PopupMenuItem(
                       child: Text('Export Chat'),
                       onTap: () async {
-                        final file =
                             await ref
                                 .read(chatHistoryProvider.notifier)
-                                .exportChatHistory();
+                                .exportChatToTxt();
 
-                        await FileSaver.instance.saveFile(
+                       /* await FileSaver.instance.saveFile(
                           name: 'chat_export_${user.username}',filePath: file.path
-                        );
+                        );*/
                       },
                     ),
                   ],

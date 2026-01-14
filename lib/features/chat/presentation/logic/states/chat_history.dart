@@ -173,17 +173,12 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
 
     final blob = html.Blob([bytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
-    final anchor = html.document.createElement('a') as html.AnchorElement
-      ..href = url
-      ..style.display = 'none'
-      ..download =
-          'chat_history ${DateTime
-          .now()
-          .day}-${DateTime
-          .now()
-          .month}-${DateTime
-          .now()
-          .year}.txt';
+    final anchor =
+        html.document.createElement('a') as html.AnchorElement
+          ..href = url
+          ..style.display = 'none'
+          ..download =
+              'chat_history ${DateTime.now().day}-${DateTime.now().month}-${DateTime.now().year}.txt';
     html.document.body!.children.add(anchor);
 
     // download
@@ -199,7 +194,7 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
   Future<void> exportChatToTxt() async {
     // Get the current chat messages
     final messages = state.value ?? [];
-    
+
     if (messages.isEmpty) {
       // No messages to export
       return;
@@ -208,61 +203,67 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
     // Get current user and generate timestamp
     final currentUser = ref.read(currentUserDetails)?.username ?? 'user';
     final now = DateTime.now();
-    final dateStr = '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
-    final timeStr = '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}';
-    
+    final dateStr =
+        '${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}';
+    final timeStr =
+        '${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}';
+
     // Create a formatted text buffer
     final buffer = StringBuffer();
-    
+
     // Add header
     buffer.writeln('=' * 60);
     buffer.writeln('Chat Export - $currentUser');
     buffer.writeln('Date: ${now.day}/${now.month}/${now.year}');
-    buffer.writeln('Time: ${now.hour}:${now.minute.toString().padLeft(2, '0')}');
-    if (selectedChat.title != null && selectedChat.title!.isNotEmpty) {
-      buffer.writeln('Chat: ${selectedChat.title}');
+    buffer.writeln(
+      'Time: ${now.hour}:${now.minute.toString().padLeft(2, '0')}',
+    );
+    if (selectedChat.sessionId.isNotEmpty) {
+      buffer.writeln('Chat: ${selectedChat.rawData}');
     }
     buffer.writeln('=' * 60);
     buffer.writeln();
-    
+
     // Add messages
     for (var i = 0; i < messages.length; i++) {
       final message = messages[i];
       final sender = message.type == ChatType.human ? 'You' : 'AI Assistant';
-      
+
       buffer.writeln('[$sender]');
       buffer.writeln(message.content);
       buffer.writeln();
-      
+
       // Add separator between messages (but not after the last one)
       if (i < messages.length - 1) {
         buffer.writeln('-' * 60);
         buffer.writeln();
       }
     }
-    
+
     // Add footer
     buffer.writeln();
     buffer.writeln('=' * 60);
     buffer.writeln('End of Chat Export');
     buffer.writeln('Total Messages: ${messages.length}');
     buffer.writeln('=' * 60);
-    
+
     // Convert to bytes and create blob for download
     final bytes = utf8.encode(buffer.toString());
     final blob = html.Blob([bytes], 'text/plain');
     final url = html.Url.createObjectUrlFromBlob(blob);
-    
+
     // Create download link and trigger download
-    final fileName = 'chat_${currentUser}_${dateStr}_$timeStr.txt';
-    final anchor = html.document.createElement('a') as html.AnchorElement
-      ..href = url
-      ..style.display = 'none'
-      ..download = fileName;
-    
+    final fileName =
+        'Chat_History_${currentUser}_${selectedChat.sessionId}_${dateStr}_$timeStr.txt';
+    final anchor =
+        html.document.createElement('a') as html.AnchorElement
+          ..href = url
+          ..style.display = 'none'
+          ..download = fileName;
+
     html.document.body!.children.add(anchor);
     anchor.click();
-    
+
     // Cleanup
     html.document.body!.children.remove(anchor);
     html.Url.revokeObjectUrl(url);
