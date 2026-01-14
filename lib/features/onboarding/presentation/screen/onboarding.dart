@@ -6,7 +6,6 @@ import 'package:gaming_startup_ai_agent/features/onboarding/presentation/widgets
 import 'package:gaming_startup_ai_agent/src/extensions/context.dart';
 import 'package:gaming_startup_ai_agent/src/res/styles/styles.dart';
 import 'package:gaming_startup_ai_agent/src/router/router.gr.dart';
-import 'package:gaming_startup_ai_agent/src/widgets/alert_dialog.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/col_spacing.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/spacing/row_spacing.dart';
 import 'package:gaming_startup_ai_agent/src/widgets/text.dart';
@@ -58,7 +57,7 @@ class OnboardingScreen extends ConsumerWidget {
                                 RowSpacing(width: 16),
                                 Expanded(
                                   child: KText(
-                                    '** Project title here **',
+                                    'Leveraging GenAI-based agent to assist in testing ideas in Software Startups/Studios and Indie Game Developers',
                                     textAlign: TextAlign.center,
                                     fontSize: 19,
                                     fontWeight: FontWeight.w500,
@@ -66,18 +65,18 @@ class OnboardingScreen extends ConsumerWidget {
                                 ),
                               ],
                             ),
-                            ColSpacing(isMobile ? 8 : 16),
-                            /*KText(
+                            ColSpacing(isMobile ? 8 : 8),
+                            KText(
                               'Thank you for participating in this study. 🙏',
                               fontSize: 18,
                               fontWeight: FontWeight.w400,
                               color: context.secondary,
-                            ),*/
+                            ),
                             ColSpacing(8),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Align(
                                     alignment: Alignment.centerLeft,
@@ -92,12 +91,32 @@ class OnboardingScreen extends ConsumerWidget {
                                     TextSpan(
                                       children: [
                                         TextSpan(text: '\u2022 '),
-                                        TextSpan(text: 'Guideline/Instruction 1'),
-
+                                        TextSpan(text: 'This '),
+                                        TextSpan(
+                                          text: 'AI Agent-Chatbot',
+                                          style: AppStyles.textStyle.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              ' is designed to support Video Game Startups and Indie Game Developers in testing their ideas at the ',
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              'Technical or Digital Prototyping',
+                                          style: AppStyles.textStyle.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' stage of development.',
+                                        ),
                                       ],
                                       style: AppStyles.textStyle.copyWith(
                                         fontSize: 15,
-
                                       ),
                                     ),
                                   ),
@@ -109,9 +128,44 @@ class OnboardingScreen extends ConsumerWidget {
 
                                         TextSpan(
                                           text:
-                                              'Guideline/Instruction 2',
+                                              'Technical or Digital Prototyping is the '
+                                              'stage where you test your game idea '
+                                              'and concept to assess how feasibility'
+                                              ' of your game. This can span from knowing ',
                                         ),
-
+                                        TextSpan(
+                                          text:
+                                              'the current market or potential userbase of your game, ',
+                                          style: AppStyles.textStyle.copyWith(
+                                            fontSize: 14,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              ' how complex it would be to develop the game, ',
+                                          style: AppStyles.textStyle.copyWith(
+                                            fontSize: 14,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text:
+                                              'what skill-set are needed to develop the game, ',
+                                          style: AppStyles.textStyle.copyWith(
+                                            fontSize: 14,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        ),
+                                        TextSpan(text: 'and '),
+                                        TextSpan(
+                                          text:
+                                              'how much it would cost to develop the game.',
+                                          style: AppStyles.textStyle.copyWith(
+                                            fontSize: 14,
+                                            fontStyle: FontStyle.italic,
+                                          ),
+                                        ),
                                       ],
                                       style: AppStyles.textStyle.copyWith(
                                         fontSize: 15,
@@ -125,7 +179,8 @@ class OnboardingScreen extends ConsumerWidget {
                                         TextSpan(text: '\u2022 '),
                                         TextSpan(
                                           text:
-                                              'Guideline/Instruction 3',
+                                              'Feel free to test the AI Agent-Chatbot with any game idea you have in mind (perhaps a game you are currently developing§)'
+                                              'The AI Agent-Chatbot will help you to assess the feasibility of your game idea by providing you with the information you need.',
                                         ),
                                       ],
                                       style: AppStyles.textStyle.copyWith(
@@ -133,7 +188,7 @@ class OnboardingScreen extends ConsumerWidget {
                                       ),
                                     ),
                                   ),
-                                  ColSpacing(24),
+                                  ColSpacing(8),
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text.rich(
@@ -157,32 +212,32 @@ class OnboardingScreen extends ConsumerWidget {
                                     title: 'Real-time Search',
                                     isMobile: true,
                                     body:
-                                        'Fetches up-to-date information directly from our internal knowledge base',
+                                        'Fetches up-to-date information on Games reviews directly from the web',
                                   ),
                                   ColSpacing(8),
                                   AgentCapability(
                                     svgPath: 'assets/svg/lamp-on.svg',
-                                    title: 'Capability 2',
+                                    title: 'Game Idea Guidance',
                                     isMobile: true,
                                     body:
-                                        'Input description here',
+                                        'Provides insights based on data from game reviews and blogs',
                                   ),
                                   ColSpacing(8),
                                   AgentCapability(
                                     svgPath: 'assets/svg/gallery-add.svg',
-                                    title: 'Capability 3',
+                                    title: 'Image Generation',
                                     isMobile: true,
                                     body:
-                                        'Input description here',
+                                        'Creates images for game backgrounds, characters, or other assets',
                                   ),
                                   ColSpacing(8),
 
                                   AgentCapability(
                                     svgPath: 'assets/svg/music-filter.svg',
-                                    title: 'Capability 4',
+                                    title: 'Sound-Effect Generation',
                                     isMobile: true,
                                     body:
-                                        'Input description here',
+                                        'Produces sound effects for games to enhance gameplay',
                                   ),
                                   if (!isMobile)
                                     Row(
@@ -217,7 +272,7 @@ class OnboardingScreen extends ConsumerWidget {
               body: Container(
                 width: size.width,
                 height: size.height,
-                padding: EdgeInsets.all(40),
+                padding: EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/bth_bg.jpeg.webp'),
@@ -232,7 +287,7 @@ class OnboardingScreen extends ConsumerWidget {
                       height: double.maxFinite,
                       //width: size.width * 0.8,
                       padding: EdgeInsets.all(16),
-                      color: context.surface.withOpacity(0.6),
+                      color: Colors.white.withOpacity(0.9),
                       child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -248,7 +303,7 @@ class OnboardingScreen extends ConsumerWidget {
                                 SizedBox(
                                   width: size.width * .7,
                                   child: KText(
-                                    '** Project title here **',
+                                    'Leveraging GenAI-based agent to assist in testing ideas in Software Startups/Studios and Indie Game Developers',
                                     textAlign: TextAlign.center,
                                     fontSize: 33,
                                     fontWeight: FontWeight.w500,
@@ -256,12 +311,12 @@ class OnboardingScreen extends ConsumerWidget {
                                 ),
                               ],
                             ),
-                           /* KText(
+                            KText(
                               'Thank you for participating in this study. 🙏',
                               fontSize: 30,
                               fontWeight: FontWeight.w400,
                               color: context.secondary,
-                            ),*/
+                            ),
 
                             ColSpacing(16),
                             Padding(
@@ -279,68 +334,137 @@ class OnboardingScreen extends ConsumerWidget {
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  ColSpacing(24),
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text.rich(
                                       TextSpan(
                                         children: [
                                           TextSpan(text: '\u2022 '),
-                                          TextSpan(text: 'Guideline/Instruction 1'),
-                                        ],
-                                        style: AppStyles.textStyle.copyWith(
-                                          fontSize: 22,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  ColSpacing(8),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(text: '\u2022 '),
-                                          TextSpan(text: 'Guideline/Instruction 2'),
-                                        ],
-                                        style: AppStyles.textStyle.copyWith(
-                                          fontSize: 22,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  ColSpacing(8),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(text: '\u2022 '),
-                                          TextSpan(text: 'Guideline/Instruction 3'),
-                                        ],
-                                        style: AppStyles.textStyle.copyWith(
-                                          fontSize: 22,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  ColSpacing(8),
-                                  Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(text: '\u2022 '),
-                                          TextSpan(text: 'Guideline/Instruction 4'),
-                                        ],
-                                        style: AppStyles.textStyle.copyWith(
-                                          fontSize: 22,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                          TextSpan(text: 'This '),
+                                          TextSpan(
+                                            text: 'AI Agent-Chatbot',
 
-                                  ColSpacing(32),
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                ' is designed to support Video Game Startups and Indie Game Developers in testing their ideas at the ',
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                'Technical or Digital Prototyping',
+
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: ' stage of development.',
+                                          ),
+                                        ],
+                                        style: AppStyles.textStyle.copyWith(
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  ColSpacing(8),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(text: '\u2022 '),
+
+                                          TextSpan(
+                                            text:
+                                                'Technical or Digital Prototyping is the '
+                                                'stage where you test your game idea '
+                                                'and concept to assess how feasibility'
+                                                ' of your game. This can span from knowing ',
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                'the current market or potential userbase of your game, ',
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontSize: 20,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                ' how complex it would be to develop the game, ',
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontSize: 20,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text:
+                                                'what skill-set are needed to develop the game, ',
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontSize: 20,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                          TextSpan(text: 'and '),
+                                          TextSpan(
+                                            text:
+                                                'how much it would cost to develop the game.',
+                                            style: AppStyles.textStyle.copyWith(
+                                              fontSize: 20,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                        ],
+                                        style: AppStyles.textStyle.copyWith(
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  ColSpacing(8),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(text: '\u2022 '),
+                                          TextSpan(
+                                            text:
+                                                'Feel free to test the AI Agent-Chatbot with any game idea you have in mind (perhaps a game you are currently developing)'
+                                                'The AI Agent-Chatbot will help you to assess the feasibility of your game idea by providing you with the information you need.',
+                                          ),
+                                        ],
+                                        style: AppStyles.textStyle.copyWith(
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  ColSpacing(8),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(text: '\u2022 '),
+                                          TextSpan(
+                                            text:
+                                                'The agent also has the following capabilities.',
+                                          ),
+                                        ],
+                                        style: AppStyles.textStyle.copyWith(
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  ColSpacing(16),
                                   Row(
                                     spacing: 16,
                                     mainAxisAlignment:
@@ -350,25 +474,25 @@ class OnboardingScreen extends ConsumerWidget {
                                         svgPath: 'assets/svg/global-search.svg',
                                         title: 'Real-time Search',
                                         body:
-                                            'Fetches up-to-date information directly from our internal knowledge base',
+                                            'Fetches up-to-date information on Games reviews directly from the web',
                                       ),
                                       AgentCapability(
                                         svgPath: 'assets/svg/lamp-on.svg',
-                                        title: 'Capability 2',
+                                        title: 'Game Idea Guidance',
                                         body:
-                                            'Input description here',
+                                            'Provides insights based on data from game reviews and blogs',
                                       ),
                                       AgentCapability(
                                         svgPath: 'assets/svg/gallery-add.svg',
-                                        title: 'Capability 3',
+                                        title: 'Image Generation',
                                         body:
-                                            'Input description here',
+                                            'Creates images for game backgrounds, characters, or other assets',
                                       ),
                                       AgentCapability(
                                         svgPath: 'assets/svg/music-filter.svg',
-                                        title: 'Capability 4',
+                                        title: 'Sound-Effect Generation',
                                         body:
-                                            'Input description here',
+                                            'Produces sound effects for games to enhance gameplay',
                                       ),
                                     ],
                                   ),
@@ -382,7 +506,7 @@ class OnboardingScreen extends ConsumerWidget {
                                         context.router.push(LoginRoute());
                                         //tell users that the evaluation of the AI agent is now over
 
-                                       /* showMessageAlertDialog(
+                                        /* showMessageAlertDialog(
                                           context,
                                           text:
                                               'Thank you so much for participating in this study 🫡\n\nThe evaluation for this AI agent is now over.',
@@ -430,7 +554,7 @@ class OnboardingScreen extends ConsumerWidget {
                                           ),
                                         );*/
                                       },
-                                      label: Text('Continue'),
+                                      label: Text('Try it out'),
                                       icon: Icon(Icons.arrow_forward_rounded),
                                     ),
                                   ),
