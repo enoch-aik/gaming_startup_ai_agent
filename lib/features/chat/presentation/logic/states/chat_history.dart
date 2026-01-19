@@ -243,7 +243,7 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
     // Add footer
     buffer.writeln();
     buffer.writeln('=' * 60);
-    buffer.writeln('End of Chat Export');
+    buffer.writeln('End of Chat');
     buffer.writeln('Total Messages: ${messages.length}');
     buffer.writeln('=' * 60);
 
@@ -254,7 +254,7 @@ class MessageState extends AsyncNotifier<List<MessageResModel>> {
 
     // Create download link and trigger download
     final fileName =
-        'Chat_History_${currentUser}_${selectedChat.sessionId}_${dateStr}_$timeStr.txt';
+        '${currentUser}_${selectedChat.sessionId}_${dateStr}_$timeStr.txt';
     final anchor =
         html.document.createElement('a') as html.AnchorElement
           ..href = url
